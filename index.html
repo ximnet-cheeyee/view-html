@@ -1,58 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Design Review Portal</title>
     <style>
-        /* This makes the page layout look clean and spaced out */
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 30px 20px;
+            background-color: #f0f2f5;
+            color: #1c1e21;
         }
-        .review-section {
-            background-color: white;
-            margin-bottom: 50px;
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid #e4e6eb;
+            padding-bottom: 20px;
+        }
+        h1 { margin: 0 0 10px 0; color: #050505; }
+        .subtitle { color: #65676b; font-size: 1.1rem; margin: 0; }
+
+        /* The container for each loop item */
+        .review-card {
+            background-color: #ffffff;
+            margin-bottom: 60px;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e4e6eb;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .card-title { font-size: 1.3rem; font-weight: 600; margin: 0; color: #050505; }
+
+        .controls { display: flex; gap: 8px; }
+        .btn {
+            background-color: #f0f2f5;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #050505;
+            transition: all 0.2s ease;
+        }
+        .btn:hover { background-color: #e4e6eb; }
+        .btn.active { background-color: #0064d2; color: #ffffff; }
+        .btn-external { background-color: #e7f3ff; color: #1877f2; }
+
+        .iframe-wrapper {
+            display: flex;
+            justify-content: center;
+            background-color: #f7f8fa;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px dashed #ccd0d5;
         }
-        /* This styles the window showing your HTML files */
         iframe {
             width: 100%;
-            height: 600px; /* Adjust this number to make the windows taller or shorter */
-            border: 2px solid #ddd;
-            border-radius: 4px;
-        }
-        h2 {
-            color: #333;
-            margin-top: 0;
+            height: 700px; 
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: width 0.3s ease;
         }
     </style>
 </head>
 <body>
 
-    <h1>Internal Design Review Portal</h1>
-    <p>Scroll down to review all the HTML page designs. You can interact with each page inside its window!</p>
+    <header>
+        <h1>Internal Design Review Portal</h1>
+        <p class="subtitle">Reviewing all layout attempts sequentially. Missing attempts are automatically hidden.</p>
+    </header>
 
-    <!-- FIRST HTML PAGE -->
-    <div class="review-section">
-        <h2>1. Attempt 1</h2>
-        <iframe src="test-1.html"></iframe>
-    </div>
+    <!-- This empty div is where JavaScript will inject all your iframe cards -->
+    <div id="review-container"></div>
 
-    <!-- SECOND HTML PAGE -->
-    <div class="review-section">
-        <h2>2. Attempt 2</h2>
-        <iframe src="test-2.html"></iframe>
-    </div>
+    <script>
+        // CONFIGURATION: Set the maximum number of attempts you think you'll ever have.
+        // If you set this to 20, it checks for files test-1.html up to test-20.html.
+        const maxAttempts = 20; 
 
-    <!-- THIRD HTML PAGE -->
-    <div class="review-section">
-        <h2>2. Attempt 3</h2>
-        <iframe src="test-3.html"></iframe>
-    </div>
+        const container = document.getElementById('review-container');
+
+        // This loop automatically builds your sections
+        for (let i = 1; i <= maxAttempts; i++) {
+            const fileName = `test-${i}.html`;
+            const cardId = `card-${i}`;
+            const frameId = `frame-${i}`;
+
+            // Create the card template
+            const cardHtml = `
+                <div class="review-card" id="${cardId}">
+                    <div class="card-header">
+                        <h2 class="card-title">Attempt ${i}</h2>
+                        <div class="controls">
+                            <button class="btn active" onclick="resizeFrame('${frameId}', '100%', this)">🖥️ Desktop</button>
+                            <button class="btn" onclick="resizeFrame('${frameId}', '768px', this)">📟 Tablet</button>
+                            <button class="btn" onclick="resizeFrame('${frameId}', '375px', this)">📱 Mobile</button>
+                            <a class="btn btn-external" href="${fileName}" target="_blank">🔗 Full Screen</a>
+                        </div>
+                    </div>
+                    <div class="iframe-wrapper">
+                        <iframe id="${frameId}" src="${fileName}" onload="checkFileExists(this, '${cardId}')" onerror="hideCard('${cardId}')"></iframe>
+                    </div>
+                </div>
+            `;
+
+            // Append it to the page
+            container.innerHTML += cardHtml;
+        }
+
+        // Helper function: If the iframe loads a "404 Not Found" page, hide the whole card!
+        function checkFileExists(iframe, cardId) {
+            try {
+                // If the browser blocks reading the iframe content due to security, 
+                // it means the file loaded perfectly. If it's a 404, we can usually detect it.
+                if (iframe.contentDocument && (iframe.contentDocument.title.includes("404") || iframe.contentDocument.body.innerHTML === "")) {
+                    document.getElementById(cardId).style.display = 'none';
+                }
+            } catch (e) {
+                // Security policy blocked reading. This is actually a good sign! 
+                // It means the HTML file loaded successfully. Do nothing and keep it visible.
+            }
+        }
+
+        // Helper function: Fallback to hide the card if the load fails completely
+        function hideCard(cardId) {
+            document.getElementById(cardId).style.display = 'none';
+        }
+
+        // Size control function
+        function resizeFrame(frameId, width, button) {
+            document.getElementById(frameId).style.width = width;
+            const parentControls = button.parentElement;
+            const buttons = parentControls.getElementsByClassName('btn');
+            for (let btn of buttons) { btn.classList.remove('active'); }
+            button.classList.add('active');
+        }
+    </script>
 
 </body>
 </html>

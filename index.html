@@ -65,16 +65,28 @@
             padding: 20px;
             border-radius: 8px;
             border: 1px dashed #ccd0d5;
+            overflow: hidden; /* Keeps scaled down iframes from overflowing */
         }
+
+        /* NEW: This inner container controls the visible window area */
+        .iframe-scale-container {
+            width: 100%;
+            height: 700px;
+            transition: width 0.3s ease, height 0.3s ease;
+            overflow: hidden;
+        }
+
         iframe {
             width: 100%;
-            height: 700px; 
+            height: 100%; 
             border: 1px solid #ccd0d5;
             border-radius: 6px;
             background-color: #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: width 0.3s ease;
+            transform-origin: top left; /* Forces scaling to happen from top-left */
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
         }
+
         /* Message displayed if absolutely no files are found yet */
         #no-files-msg {
             display: none;
@@ -108,6 +120,7 @@
                 const fileName = `test-${i}.html`;
                 const cardId = `card-${i}`;
                 const frameId = `frame-${i}`;
+                const containerId = `scale-container-${i}`;
 
                 try {
                     // Check if file exists without triggering the browser security block
@@ -116,20 +129,22 @@
                     if (response.ok) {
                         filesFoundCount++;
                         
-                        // Build the card layout dynamically only if the file exists!
+                        // UPDATED: Added iframe-scale-container around the iframe
                         const cardHtml = `
                             <div class="review-card" id="${cardId}">
                                 <div class="card-header">
                                     <h2 class="card-title">Attempt ${i}</h2>
                                     <div class="controls">
-                                        <button class="btn active" onclick="resizeFrame('${frameId}', '100%', this)">🖥️ Desktop</button>
-                                        <button class="btn" onclick="resizeFrame('${frameId}', '768px', this)">📟 Tablet</button>
-                                        <button class="btn" onclick="resizeFrame('${frameId}', '375px', this)">📱 Mobile</button>
+                                        <button class="btn active" onclick="resizeFrame('${i}', 'desktop', this)">🖥️ Desktop</button>
+                                        <button class="btn" onclick="resizeFrame('${i}', 'tablet', this)">📟 Tablet View</button>
+                                        <button class="btn" onclick="resizeFrame('${i}', 'mobile', this)">📱 Mobile View</button>
                                         <a class="btn btn-external" href="${fileName}" target="_blank">🔗 Full Screen</a>
                                     </div>
                                 </div>
                                 <div class="iframe-wrapper">
-                                    <iframe id="${frameId}" src="${fileName}"></iframe>
+                                    <div class="iframe-scale-container" id="${containerId}">
+                                        <iframe id="${frameId}" src="${fileName}"></iframe>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -150,9 +165,48 @@
         // Run the checker script instantly as the page loads
         loadReviewPortal();
 
-        // Size control function
-        function resizeFrame(frameId, width, button) {
-            document.getElementById(frameId).style.width = width;
+        // UPDATED: Size and Scale control function
+        function resizeFrame(index, viewType, button) {
+            const frame = document.getElementById(`frame-${index}`);
+            const container = document.getElementById(`scale-container-${index}`);
+            
+            // Standard desktop base size to treat as the canvas width
+            const desktopWidth = 1200; 
+
+            if (viewType === 'desktop') {
+                // Reset to regular full width layout
+                container.style.width = "100%";
+                container.style.height = "700px";
+                frame.style.width = "100%";
+                frame.style.height = "100%";
+                frame.style.transform = "scale(1)";
+            } 
+            else if (viewType === 'tablet') {
+                // Targets a 768px wide bounding box
+                const targetWidth = 768;
+                const scaleFactor = targetWidth / desktopWidth; // 0.64
+
+                container.style.width = `${targetWidth}px`;
+                container.style.height = `${700 * scaleFactor}px`; // scale height to avoid whitespace
+                
+                frame.style.width = `${desktopWidth}px`;
+                frame.style.height = `${700 / scaleFactor}px`;
+                frame.style.transform = `scale(${scaleFactor})`;
+            } 
+            else if (viewType === 'mobile') {
+                // Targets a 375px wide bounding box
+                const targetWidth = 375;
+                const scaleFactor = targetWidth / desktopWidth; // ~0.31
+
+                container.style.width = `${targetWidth}px`;
+                container.style.height = `${700 * scaleFactor}px`;
+                
+                frame.style.width = `${desktopWidth}px`;
+                frame.style.height = `${700 / scaleFactor}px`;
+                frame.style.transform = `scale(${scaleFactor})`;
+            }
+
+            // Update button active states
             const parentControls = button.parentElement;
             const buttons = parentControls.getElementsByClassName('btn');
             for (let btn of buttons) { btn.classList.remove('active'); }

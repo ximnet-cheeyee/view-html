@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Atlas Chat is a chatbot platform for SME support, CX, and operations teams that turns knowledge into fast, accurate answers." />
+    <title>Atlas Chat \u2014 The chatbot platform for support teams that need better answers, not more noise</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: oklch(0.18 0.035 270);
+        --bg-elev: oklch(0.22 0.03 270);
+        --surface: oklch(0.24 0.028 270);
+        --surface-2: oklch(0.29 0.03 270);
+        --text: oklch(0.97 0.01 255);
+        --muted: oklch(0.78 0.02 255);
+        --line: oklch(1 0 0 / 0.12);
+        --brand: oklch(0.72 0.18 152);
+        --brand-2: oklch(0.64 0.15 197);
+        --brand-soft: oklch(0.72 0.18 152 / 0.14);
+        --shadow: 0 18px 48px oklch(0 0 0 / 0.34);
+        --radius: 16px;
+        --content: 1180px;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, oklch(0.36 0.1 155 / 0.18), transparent 36%),
+          radial-gradient(circle at 85% 15%, oklch(0.34 0.1 210 / 0.18), transparent 28%),
+          linear-gradient(180deg, var(--bg), oklch(0.15 0.025 270));
+        color: var(--text);
+        line-height: 1.5;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a { color: inherit; text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      .wrap { width: min(calc(100% - 32px), var(--content)); margin: 0 auto; }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        color: var(--brand);
+        font-weight: 650;
+        letter-spacing: 0.01em;
+        font-size: 0.92rem;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 1.2rem;
+        height: 1px;
+        background: color-mix(in oklab, var(--brand) 70%, white 30%);
+      }
+      h1, h2, h3 { line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance; margin: 0; }
+      h1 { font-size: clamp(3.2rem, 8vw, 5.9rem); max-width: 11ch; }
+      h2 { font-size: clamp(2rem, 3.3vw, 3.2rem); max-width: 14ch; }
+      h3 { font-size: 1.1rem; }
+      p { margin: 0; color: var(--muted); max-width: 68ch; }
+      .btns { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        min-height: 3.2rem;
+        padding: 0.82rem 1.15rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 650;
+        transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+      }
+      .btn-primary { background: var(--brand); color: oklch(0.14 0.02 250); box-shadow: var(--shadow); }
+      .btn-secondary { background: transparent; border-color: var(--line); color: var(--text); }
+      .btn:hover { transform: translateY(-1px); }
+      .btn:focus-visible, a:focus-visible, button:focus-visible {
+        outline: 3px solid color-mix(in oklab, var(--brand) 75%, white 25%);
+        outline-offset: 3px;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(18px);
+        background: color-mix(in oklab, var(--bg) 78%, transparent);
+        border-bottom: 1px solid color-mix(in oklab, var(--line) 88%, transparent);
+      }
+      .topbar-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 4.8rem;
+        gap: 1rem;
+      }
+      .brandmark { display: flex; align-items: center; gap: 0.8rem; font-weight: 700; }
+      .orb {
+        width: 1.15rem; height: 1.15rem; border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, white, var(--brand) 55%, var(--brand-2));
+        box-shadow: 0 0 22px color-mix(in oklab, var(--brand) 65%, transparent);
+      }
+      nav ul { display: flex; gap: 1.25rem; list-style: none; padding: 0; margin: 0; color: var(--muted); }
+      nav a:hover { color: var(--text); }
+
+      .hero { padding: 4.4rem 0 2.8rem; }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+        gap: 2rem;
+        align-items: end;
+      }
+      .hero-copy { padding-bottom: 1rem; }
+      .hero-copy p { margin-top: 1.2rem; font-size: 1.06rem; }
+      .hero-meta {
+        margin-top: 1.6rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .meta-card {
+        padding: 1rem;
+        border-radius: var(--radius);
+        background: color-mix(in oklab, var(--surface) 92%, transparent);
+        border: 1px solid var(--line);
+      }
+      .meta-card strong { display: block; font-size: 1.15rem; margin-bottom: 0.2rem; }
+      .meta-card span { color: var(--muted); font-size: 0.94rem; }
+      .hero-panel {
+        border-radius: calc(var(--radius) + 8px);
+        background:
+          linear-gradient(180deg, color-mix(in oklab, var(--surface) 84%, white 6%), color-mix(in oklab, var(--surface) 92%, black 8%));
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .panel-top {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 1rem 1.1rem;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .dots { display: flex; gap: 0.4rem; }
+      .dots span { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: color-mix(in oklab, var(--muted) 45%, transparent); }
+      .conversation { padding: 1.1rem; display: grid; gap: 0.8rem; }
+      .bubble {
+        max-width: 85%;
+        padding: 0.9rem 1rem;
+        border-radius: 1.2rem;
+        border: 1px solid var(--line);
+        background: color-mix(in oklab, var(--bg-elev) 70%, transparent);
+      }
+      .bubble.user { margin-left: auto; background: color-mix(in oklab, var(--brand-soft) 65%, var(--surface)); color: var(--text); }
+      .bubble.assistant { background: color-mix(in oklab, var(--surface-2) 88%, transparent); }
+      .bubble small { display: block; color: var(--muted); margin-top: 0.35rem; }
+      .status-row {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem;
+        padding: 0 1.1rem 1.1rem;
+      }
+      .status {
+        padding: 0.9rem; border-radius: 14px; background: color-mix(in oklab, var(--surface) 90%, transparent);
+        border: 1px solid var(--line);
+      }
+      .status strong { display: block; font-size: 1rem; }
+      .status span { color: var(--muted); font-size: 0.9rem; }
+
+      section { padding: 5rem 0; }
+      .section-head { display: grid; gap: 0.9rem; margin-bottom: 2rem; }
+      .benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+      .benefit {
+        padding: 1.25rem;
+        border-radius: var(--radius);
+        background: color-mix(in oklab, var(--surface) 92%, transparent);
+        border: 1px solid var(--line);
+      }
+      .benefit p { margin-top: 0.7rem; }
+      .proof {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 1rem;
+        align-items: start;
+      }
+      .quote, .panel {
+        padding: 1.35rem;
+        border-radius: calc(var(--radius) + 2px);
+        background: color-mix(in oklab, var(--surface) 92%, transparent);
+        border: 1px solid var(--line);
+      }
+      blockquote { margin: 0; font-size: clamp(1.35rem, 2vw, 1.9rem); line-height: 1.15; letter-spacing: -0.03em; color: var(--text); }
+      .quote p:last-child { margin-top: 1rem; }
+      .stats { display: grid; gap: 0.9rem; }
+      .stat {
+        display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+        padding-bottom: 0.9rem; border-bottom: 1px solid var(--line);
+      }
+      .stat:last-child { border-bottom: 0; padding-bottom: 0; }
+      .stat strong { font-size: 1.15rem; color: var(--text); }
+      .stat span { color: var(--muted); max-width: 26ch; text-align: right; }
+
+      .process { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+      .step {
+        padding: 1.2rem;
+        border-radius: var(--radius);
+        background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 94%, transparent), color-mix(in oklab, var(--surface-2) 88%, transparent));
+        border: 1px solid var(--line);
+      }
+      .step-num { color: var(--brand); font-weight: 700; margin-bottom: 0.7rem; }
+      .step p { margin-top: 0.55rem; }
+
+      .cta {
+        padding: 4.5rem 0 5.5rem;
+      }
+      .cta-box {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 1rem;
+        padding: 1.35rem;
+        border-radius: calc(var(--radius) + 6px);
+        background:
+          radial-gradient(circle at top right, color-mix(in oklab, var(--brand) 24%, transparent), transparent 28%),
+          linear-gradient(180deg, color-mix(in oklab, var(--surface) 92%, transparent), color-mix(in oklab, var(--surface-2) 90%, transparent));
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+      .cta-side {
+        display: grid; gap: 0.85rem;
+        align-content: start;
+      }
+      .mini {
+        padding: 1rem;
+        border-radius: 14px;
+        background: color-mix(in oklab, var(--bg-elev) 78%, transparent);
+        border: 1px solid var(--line);
+      }
+      .mini strong { display: block; margin-bottom: 0.25rem; }
+      footer { padding: 0 0 2.2rem; color: var(--muted); }
+
+      @media (max-width: 980px) {
+        .hero-grid, .proof, .cta-box { grid-template-columns: 1fr; }
+        .benefits, .process { grid-template-columns: 1fr 1fr; }
+        .hero-meta, .status-row { grid-template-columns: 1fr; }
+        nav { display: none; }
+      }
+      @media (max-width: 640px) {
+        .hero { padding-top: 3rem; }
+        h1 { max-width: 10ch; }
+        .benefits, .process { grid-template-columns: 1fr; }
+        .wrap { width: min(calc(100% - 24px), var(--content)); }
+        section { padding: 4rem 0; }
+        .btns { flex-direction: column; align-items: stretch; }
+        .btn { width: 100%; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        .btn:hover { transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap topbar-inner">
+        <a class="brandmark" href="#top" aria-label="Atlas Chat home">
+          <span class="orb" aria-hidden="true"></span>
+          <span>Atlas Chat</span>
+        </a>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="#why">Why it matters</a></li>
+            <li><a href="#proof">Proof</a></li>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+        <a class="btn btn-secondary" href="#contact">Book a demo</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Chatbot platform for support, CX, and ops</span>
+            <h1>The chatbot platform for teams that need better answers, not more noise.</h1>
+            <p>Atlas Chat turns company knowledge into instant, on-brand responses across support queues, customer journeys, and internal operations. Built for SMEs that need to scale service without scaling confusion.</p>
+            <div class="btns" style="margin-top:1.6rem;">
+              <a class="btn btn-primary" href="#contact">Book a live demo</a>
+              <a class="btn btn-secondary" href="#proof">See the proof</a>
+            </div>
+            <div class="hero-meta" aria-label="Key outcomes">
+              <div class="meta-card">
+                <strong>Faster resolution</strong>
+                <span>Answer repetitive questions instantly and free teams for higher-value work.</span>
+              </div>
+              <div class="meta-card">
+                <strong>Consistent tone</strong>
+                <span>Keep every response aligned with your policies, tone, and source of truth.</span>
+              </div>
+              <div class="meta-card">
+                <strong>Operational clarity</strong>
+                <span>See what customers ask most, where knowledge gaps exist, and what to fix next.</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-panel" aria-label="Live assistant preview">
+            <div class="panel-top">
+              <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span>Live support assistant</span>
+            </div>
+            <div class="conversation">
+              <div class="bubble user">
+                Do you integrate with Shopify and Zendesk?
+              </div>
+              <div class="bubble assistant">
+                Yes. Atlas Chat can answer product, order, and support questions using approved knowledge sources and connected systems.
+                <small>Sources: help center \u00b7 order status \u00b7 billing policy</small>
+              </div>
+              <div class="bubble user">
+                Can it hand off edge cases to our team?
+              </div>
+              <div class="bubble assistant">
+                Absolutely. It routes unresolved or sensitive issues to the right queue with context intact, so customers never start over.
+                <small>Escalation rule: policy exception \u00b7 billing dispute \u00b7 account access</small>
+              </div>
+            </div>
+            <div class="status-row">
+              <div class="status">
+                <strong>92%</strong>
+                <span>of common questions resolved without a human reply</span>
+              </div>
+              <div class="status">
+                <strong>24/7</strong>
+                <span>coverage for repeat queries, even when teams are offline</span>
+              </div>
+              <div class="status">
+                <strong>1 week</strong>
+                <span>typical time to launch a focused first use case</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="why">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">Why teams switch</span>
+            <h2>Support volume is not the problem. Unstructured knowledge is.</h2>
+            <p>Most teams already have the answers scattered across docs, tickets, and tribal knowledge. Atlas Chat makes that expertise usable at the moment of need, so customers get a direct answer and operators get a system they can trust.</p>
+          </div>
+          <div class="benefits">
+            <article class="benefit">
+              <h3>Train on what you already know</h3>
+              <p>Connect help articles, policies, internal docs, and approved workflows to create a chatbot that speaks with authority instead of guessing.</p>
+            </article>
+            <article class="benefit">
+              <h3>Deploy with guardrails</h3>
+              <p>Set escalation rules, handoff conditions, and answer boundaries so the assistant stays useful in the real world, not just in a demo.</p>
+            </article>
+            <article class="benefit">
+              <h3>Learn from every conversation</h3>
+              <p>Track recurring questions, broken paths, and unresolved topics to improve the customer experience and your internal knowledge base.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="proof">
+        <div class="wrap proof">
+          <div class="quote">
+            <span class="eyebrow">Proof, not hype</span>
+            <blockquote>\u201cWe wanted automation that felt like a senior operator, not a chatbot gimmick. Atlas Chat gave us a clean first deployment and a clear view of what customers actually need.\u201d</blockquote>
+            <p>\u2014 Head of Customer Operations, B2B services company</p>
+          </div>
+          <div class="panel stats" aria-label="Selected outcomes">
+            <div class="stat">
+              <strong>Less repeat work</strong>
+              <span>Reduce repetitive tickets by answering routine questions in the first interaction.</span>
+            </div>
+            <div class="stat">
+              <strong>Faster onboarding</strong>
+              <span>Launch a useful assistant without months of implementation overhead.</span>
+            </div>
+            <div class="stat">
+              <strong>Better visibility</strong>
+              <span>Use conversation data to spot content gaps, policy friction, and customer pain points.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">How it works</span>
+            <h2>A focused rollout path that gets you from knowledge base to live assistant.</h2>
+          </div>
+          <div class="process">
+            <article class="step">
+              <div class="step-num">1</div>
+              <h3>Connect your sources</h3>
+              <p>Bring in the docs, policies, and workflows your team already trusts.</p>
+            </article>
+            <article class="step">
+              <div class="step-num">2</div>
+              <h3>Set the rules</h3>
+              <p>Define what the assistant can answer, when it should escalate, and how it should speak.</p>
+            </article>
+            <article class="step">
+              <div class="step-num">3</div>
+              <h3>Launch one strong use case</h3>
+              <p>Start with the highest-volume problem, then expand once the team sees value.</p>
+            </article>
+            <article class="step">
+              <div class="step-num">4</div>
+              <h3>Improve from real usage</h3>
+              <p>Use conversation data to sharpen content, reduce friction, and raise containment over time.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta" id="contact">
+        <div class="wrap cta-box">
+          <div>
+            <span class="eyebrow">Ready when your team is</span>
+            <h2>Turn your operational knowledge into a chatbot customers can actually trust.</h2>
+            <p style="margin-top:1rem;">If your team is spending too much time repeating the same answers, Atlas Chat is built to help you move faster without losing accuracy, control, or tone.</p>
+            <div class="btns" style="margin-top:1.4rem;">
+              <a class="btn btn-primary" href="mailto:hello@atlaschat.ai">Talk to sales</a>
+              <a class="btn btn-secondary" href="#top">Back to top</a>
+            </div>
+          </div>
+          <div class="cta-side">
+            <div class="mini">
+              <strong>For support leaders</strong>
+              <span>Reduce load, improve response quality, and keep the team focused on exceptions.</span>
+            </div>
+            <div class="mini">
+              <strong>For CX operators</strong>
+              <span>Spot recurring friction and fix the knowledge gaps that create bad experiences.</span>
+            </div>
+            <div class="mini">
+              <strong>For ops teams</strong>
+              <span>Bring order to repetitive requests and make company knowledge easier to use.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap">
+      <p>Atlas Chat \u2014 designed for teams that want a chatbot with backbone.</p>
+    </footer>
+  </body>
+</html>

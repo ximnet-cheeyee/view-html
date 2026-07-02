@@ -188,6 +188,7 @@
                                             <span class="zoom-label" id="${zoomLabelId}">100%</span>
                                             <button class="zoom-btn" onclick="adjustZoom('${frameId}', 0.1)" title="Zoom in">+</button>
                                             <button class="zoom-btn" onclick="fitToView('${frameId}')" title="Fit to view">⤢</button>
+                                            <button class="zoom-btn" onclick="reloadFrame('${frameId}')" title="Reload">⟳</button>
                                         </div>
                                     </div>
                                 </div>
@@ -273,6 +274,17 @@
         window.addEventListener('resize', () => {
             Object.keys(frameState).forEach(fitToView);
         });
+
+        // Reloads just this one iframe (useful after editing the underlying
+        // test-N.html file) without refreshing the whole portal page.
+        function reloadFrame(frameId) {
+            const frame = document.getElementById(frameId);
+            // Re-assigning src (even to the same value) forces a reload.
+            // Adding a cache-busting query param ensures it isn't served
+            // from browser cache, so you always see the latest saved file.
+            const baseSrc = frame.src.split('?')[0];
+            frame.src = baseSrc + '?t=' + Date.now();
+        }
     </script>
 
 </body>

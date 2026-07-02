@@ -1,1035 +1,243 @@
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XIMNET \u2014 Chatbot for support, CX, and ops</title>
+    <title>XIMNET — AI Agent and Business Automation</title>
     <meta
       name="description"
-      content="XIMNET helps support, CX, and ops teams answer faster, stay on brand, and hand off cleanly when a human should take over."
+      content="XIMNET helps SME teams automate customer support, CX, and operations with AI agents built for real business outcomes."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Libre+Franklin:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-	<style>
-	:root {
-  color-scheme: light;
-  --bg: oklch(1 0 0);
-  --surface: oklch(0.978 0.006 260);
-  --surface-strong: oklch(0.943 0.008 260);
-  --ink: oklch(0.08 0 0);
-  --secondary: oklch(0.44 0.02 260);
-  --accent: oklch(0.78 0.14 225);
-  --border: oklch(0.9 0.01 260);
-  --muted: oklch(0.77 0.012 260);
-  --max: 74rem;
-  --radius-card: 0.5rem;
-  --radius-pill: 9999px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family: "Libre Baskerville", Georgia, serif;
-  background: var(--bg);
-  color: var(--ink);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration-thickness: 0.08em;
-}
-
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-.container {
-  width: min(var(--max), calc(100% - 2rem));
-  margin-inline: auto;
-}
-
-.skip-link {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  z-index: 100;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-pill);
-  background: var(--ink);
-  color: var(--bg);
-  transform: translateY(-160%);
-  transition: transform 160ms ease-out;
-  font-family: "Libre Franklin", system-ui, sans-serif;
-}
-
-.skip-link:focus {
-  transform: translateY(0);
-}
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-}
-
-.header-grid {
-  min-height: 4.75rem;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.brand,
-.site-nav,
-.button,
-.thread-label,
-.workspace__brand,
-.eyebrow,
-.poster-overline,
-.poster-label,
-.poster-chip,
-.step-index,
-.compare-table thead th,
-.compare-table tbody th,
-.site-footer {
-  font-family: "Libre Franklin", system-ui, sans-serif;
-}
-
-.brand {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.site-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-  color: var(--secondary);
-  font-size: 1rem;
-}
-
-.site-nav a {
-  transition: color 160ms ease-out;
-}
-
-.site-nav a:hover {
-  color: var(--ink);
-}
-
-.section {
-  padding-block: clamp(4rem, 8vw, 7rem);
-}
-
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
-  align-items: start;
-  gap: clamp(2rem, 4.5vw, 4rem);
-  padding-top: clamp(3rem, 6vw, 5rem);
-}
-
-.hero-copy {
-  max-width: 42rem;
-}
-
-.eyebrow {
-  margin: 0 0 1rem;
-  color: var(--secondary);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.eyebrow--inverted {
-  color: var(--accent);
-}
-
-h1,
-h2,
-h3,
-p {
-  margin: 0;
-}
-
-.hero h1 {
-  max-width: 12ch;
-  font-size: clamp(3rem, 6vw, 4.9rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.section-head h2,
-.cta-band h2 {
-  max-width: 13ch;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.14;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.lede,
-.section-head p,
-.cta-band p,
-.feature-line p,
-.process p,
-.compare-table td,
-.compare-table th,
-.site-footer,
-.poster-body,
-.workspace__note {
-  line-height: 1.65;
-}
-
-.lede {
-  max-width: 62ch;
-  margin-top: 1.25rem;
-  color: var(--secondary);
-  font-size: 1.15rem;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-top: 1.75rem;
-}
-
-.hero-points {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0;
-}
-
-.hero-points li,
-.source-chips li {
-  padding: 0.7rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--secondary);
-  font-size: 0.92rem;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 3.5rem;
-  padding: 0.95rem 1.35rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid transparent;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  transition: transform 160ms ease-out, background-color 160ms ease-out, border-color 160ms ease-out;
-  font-size: 0.96rem;
-}
-
-.button:hover {
-  transform: translateY(-1px);
-}
-
-.button:focus-visible,
-.site-nav a:focus-visible,
-.site-footer a:focus-visible,
-.skip-link:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-.button--solid {
-  background: var(--accent);
-  color: var(--ink);
-  border-color: var(--accent);
-}
-
-.button--ghost {
-  border-color: var(--border);
-  background: transparent;
-  color: var(--secondary);
-}
-
-.button--ghost:hover {
-  border-color: color-mix(in oklch, var(--ink) 22%, var(--border));
-  color: var(--ink);
-}
-
-.workspace {
-  margin: 0;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  background: var(--bg);
-}
-
-.workspace__chrome {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.1rem 0.05rem 1rem;
-  color: var(--secondary);
-  font-size: 0.92rem;
-}
-
-.workspace__brand {
-  color: var(--ink);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  font-size: 0.78rem;
-}
-
-.workspace__status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-dot {
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.workspace__poster {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  background: var(--surface);
-}
-
-.workspace__poster svg {
-  width: 100%;
-  height: auto;
-}
-
-.poster-overline {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  fill: var(--secondary);
-}
-
-.poster-title {
-  font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 56px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  fill: var(--ink);
-}
-
-.poster-body {
-  font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 18px;
-  fill: var(--secondary);
-}
-
-.poster-label {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  fill: var(--secondary);
-}
-
-.poster-label--inverse {
-  fill: var(--ink);
-}
-
-.poster-copy {
-  font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 17px;
-  fill: var(--ink);
-}
-
-.poster-copy--inverse {
-  fill: var(--ink);
-}
-
-.poster-chip {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  fill: var(--ink);
-}
-
-.poster-footnote {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  fill: var(--secondary);
-}
-
-.workspace__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.95fr);
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.workspace__thread,
-.workspace__panel,
-.statement-panel,
-.cta-band,
-.compare-wrap {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-}
-
-.workspace__thread,
-.workspace__panel {
-  padding: 1rem;
-  background: var(--surface);
-}
-
-.thread-label {
-  margin-bottom: 0.6rem;
-  color: var(--secondary);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.thread-label--reply {
-  margin-top: 1rem;
-  color: var(--ink);
-}
-
-.bubble {
-  max-width: 100%;
-  padding: 0.95rem 1rem;
-  border-radius: 0.5rem;
-  line-height: 1.55;
-}
-
-.bubble + .bubble {
-  margin-top: 0.85rem;
-}
-
-.bubble--incoming {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--ink);
-}
-
-.bubble--outgoing {
-  background: var(--accent);
-  color: var(--ink);
-}
-
-.source-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 0;
-}
-
-.workspace__panel h2 {
-  font-size: 1.15rem;
-  line-height: 1.18;
-  margin-bottom: 0.9rem;
-}
-
-.check-list {
-  display: grid;
-  gap: 0.9rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  color: var(--secondary);
-}
-
-.check-list li {
-  position: relative;
-  padding-left: 1.15rem;
-}
-
-.check-list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.55rem;
-  width: 0.56rem;
-  height: 0.56rem;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.workspace__note {
-  margin-top: 1rem;
-  padding: 0.95rem 1rem;
-  border-radius: 0.5rem;
-  background: var(--surface-strong);
-  color: var(--ink);
-}
-
-.section-head {
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  align-items: end;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.section-head--compact {
-  margin-bottom: 1.5rem;
-}
-
-.section-head p {
-  max-width: 60ch;
-  color: var(--secondary);
-  font-size: 1.05rem;
-}
-
-.capabilities-grid {
-  display: grid;
-  grid-template-columns: minmax(18rem, 0.85fr) minmax(0, 1.15fr);
-  gap: 1rem;
-}
-
-.statement-panel {
-  display: grid;
-  align-content: start;
-  padding: 1.35rem;
-  background: var(--surface);
-}
-
-.statement-panel p {
-  max-width: 18ch;
-  font-size: clamp(1.65rem, 3vw, 2.45rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-.feature-lines {
-  border-top: 1px solid var(--border);
-}
-
-.feature-line {
-  display: grid;
-  grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 1.1fr);
-  gap: 1.5rem;
-  padding: 1.2rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.feature-line h3 {
-  font-size: 1.15rem;
-  line-height: 1.18;
-  letter-spacing: -0.02em;
-}
-
-.feature-line p {
-  color: var(--secondary);
-}
-
-.process {
-  display: grid;
-  gap: 0;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  border-top: 1px solid var(--border);
-}
-
-.process li {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 1.1rem;
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.step-index {
-  min-width: 3rem;
-  color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.process h3 {
-  margin-bottom: 0.35rem;
-  font-size: 1.16rem;
-  line-height: 1.18;
-  letter-spacing: -0.02em;
-}
-
-.process p {
-  max-width: 64ch;
-  color: var(--secondary);
-}
-
-.compare-wrap {
-  overflow: hidden;
-  background: var(--bg);
-}
-
-.compare-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.compare-table th,
-.compare-table td {
-  padding: 1rem 1.1rem;
-  vertical-align: top;
-  text-align: left;
-  border-top: 1px solid var(--border);
-}
-
-.compare-table thead th {
-  border-top: 0;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.compare-table tbody th {
-  font-weight: 700;
-  color: var(--ink);
-  width: 22%;
-}
-
-.compare-table td {
-  color: var(--secondary);
-}
-
-.cta-band {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: clamp(1.4rem, 3vw, 2rem);
-  background: var(--surface);
-}
-
-.cta-band p {
-  max-width: 50ch;
-  margin-top: 0.85rem;
-  color: var(--secondary);
-}
-
-.site-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-block: 0 2.5rem;
-  color: var(--secondary);
-  font-size: 0.95rem;
-}
-
-.site-footer a {
-  color: var(--ink);
-}
-
-@keyframes rise {
-  from {
-    transform: translateY(12px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-.hero-copy,
-.workspace {
-  animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.workspace {
-  animation-delay: 90ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-@media (max-width: 60rem) {
-  .header-grid {
-    grid-template-columns: 1fr;
-    justify-items: start;
-    padding-block: 1rem;
-  }
-
-  .site-nav {
-    justify-content: flex-start;
-  }
-
-  .hero,
-  .section-head,
-  .capabilities-grid,
-  .cta-band {
-    grid-template-columns: 1fr;
-    display: grid;
-  }
-
-  .workspace__grid,
-  .feature-line {
-    grid-template-columns: 1fr;
-  }
-
-  .hero h1 {
-    max-width: 12ch;
-  }
-
-  .statement-panel p {
-    max-width: 20ch;
-  }
-}
-
-@media (max-width: 42rem) {
-  .container {
-    width: min(var(--max), calc(100% - 1.25rem));
-  }
-
-  .hero-actions,
-  .hero-points,
-  .source-chips,
-  .site-footer {
-    gap: 0.75rem;
-  }
-
-  .workspace__chrome {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .compare-table th,
-  .compare-table td {
-    padding: 0.9rem 0.85rem;
-  }
-
-  .compare-table tbody th {
-    width: auto;
-  }
-
-  .cta-band {
-    align-items: start;
-  }
-}
-
-	</style>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f7f4;
+        --surface: #ffffff;
+        --surface-soft: #f3ddd7;
+        --ink: #111827;
+        --ink-strong: #0f172a;
+        --muted: #5b6472;
+        --accent: #c53b2c;
+        --border: #d7dce3;
+        --shadow: 0 10px 30px rgba(17, 24, 39, 0.12);
+        --radius: 14px;
+        --max: 1180px;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: Aptos, Inter, system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      .skip {
+        position: absolute; left: -999px; top: 1rem; background: var(--surface); padding: .75rem 1rem; border-radius: 999px;
+      }
+      .skip:focus { left: 1rem; z-index: 10; }
+      .shell { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
+      .nav {
+        display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0;
+      }
+      .brand { font-weight: 800; letter-spacing: -0.03em; font-size: 1.1rem; color: var(--ink-strong); }
+      .navlinks { display: flex; gap: 1.25rem; color: var(--muted); font-size: .95rem; }
+      .hero {
+        display: grid; grid-template-columns: 1.2fr .8fr; gap: 2rem; align-items: end;
+        padding: clamp(3rem, 7vw, 6rem) 0 4rem;
+      }
+      h1, h2, h3 { margin: 0; text-wrap: balance; }
+      h1 {
+        font-size: clamp(3rem, 7vw, 5.5rem); line-height: .95; letter-spacing: -.03em; color: var(--ink-strong);
+        max-width: 10ch;
+      }
+      .lead { max-width: 60ch; font-size: 1.05rem; line-height: 1.7; color: var(--muted); margin-top: 1.25rem; }
+      .actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.25rem;
+        border-radius: var(--radius); font-weight: 700; transition: transform .2s ease, background .2s ease, color .2s ease;
+      }
+      .btn-primary { background: var(--ink-strong); color: #fff; }
+      .btn-secondary { background: var(--surface); color: var(--ink-strong); border: 1px solid var(--border); }
+      .btn:hover { transform: translateY(-1px); }
+      .btn:focus-visible, .navlinks a:focus-visible, .brand:focus-visible, .skip:focus-visible {
+        outline: 3px solid var(--accent); outline-offset: 3px;
+      }
+      .hero-panel {
+        background: linear-gradient(180deg, var(--surface), #fafafa); border: 1px solid var(--border); border-radius: 20px;
+        padding: 1.5rem; box-shadow: var(--shadow);
+      }
+      .panel-note { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+      .metrics { display: grid; gap: 1rem; margin-top: 1.25rem; }
+      .metric {
+        padding: 1rem 1rem 1rem 1.1rem; background: var(--surface-soft); border-radius: var(--radius);
+      }
+      .metric strong { display: block; color: var(--ink-strong); font-size: 1rem; margin-bottom: .25rem; }
+      .metric span { color: var(--muted); line-height: 1.5; }
+      .section { padding: 1.5rem 0 5rem; }
+      .section-head {
+        display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1.5rem;
+      }
+      .section-head h2 { font-size: clamp(1.8rem, 3vw, 2.75rem); letter-spacing: -.03em; }
+      .section-head p { color: var(--muted); max-width: 52ch; margin: 0; line-height: 1.6; }
+      .features {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;
+      }
+      .feature {
+        background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 1.25rem; min-height: 220px;
+      }
+      .feature .kicker { display: inline-block; color: var(--accent); font-weight: 800; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; margin-bottom: .9rem; }
+      .feature h3 { font-size: 1.25rem; margin-bottom: .65rem; color: var(--ink-strong); }
+      .feature p { margin: 0; color: var(--muted); line-height: 1.65; }
+      .split {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: stretch;
+      }
+      .quote, .proof {
+        background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem;
+      }
+      .quote { background: var(--ink-strong); color: #fff; }
+      .quote p, .proof p { margin: 0; line-height: 1.7; }
+      .quote strong { display: block; font-size: 1.25rem; margin-bottom: .8rem; }
+      .proof ul { margin: 1rem 0 0; padding: 0; list-style: none; display: grid; gap: .85rem; }
+      .proof li { padding-top: .85rem; border-top: 1px solid var(--border); color: var(--muted); }
+      .cta {
+        display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+        background: var(--surface-soft); border-radius: 20px; padding: 1.5rem; margin-top: 1.5rem;
+      }
+      .cta p { margin: .35rem 0 0; color: var(--muted); max-width: 52ch; line-height: 1.6; }
+      .footer { padding: 2rem 0 2.5rem; color: var(--muted); font-size: .92rem; }
+
+      @media (max-width: 900px) {
+        .hero, .split, .section-head, .cta { grid-template-columns: 1fr; }
+        .nav { gap: 1rem; }
+        .navlinks { display: none; }
+        h1 { max-width: 12ch; }
+      }
+
+      @media (max-width: 640px) {
+        .shell { width: min(calc(100% - 1.25rem), var(--max)); }
+        .hero { padding-top: 2rem; }
+        .actions { flex-direction: column; align-items: stretch; }
+        .btn { width: 100%; }
+        .cta { gap: 1.25rem; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .btn { transition: none; }
+        .btn:hover { transform: none; }
+      }
+    </style>
   </head>
   <body>
-    <a class="skip-link" href="#content">Skip to content</a>
+    <a class="skip" href="#main">Skip to content</a>
 
-    <header class="site-header" id="top">
-      <div class="container header-grid">
-        <a class="brand" href="#top" aria-label="XIMNET home">XIMNET</a>
-        <nav class="site-nav" aria-label="Primary">
-          <a href="#capabilities">Capabilities</a>
-          <a href="#workflow">Workflow</a>
-          <a href="#compare">Why XIMNET</a>
-        </nav>
-        <a class="button button--solid" href="mailto:hello@ximnet.com?subject=Book%20a%20demo%20with%20XIMNET">
-          Book a demo
-        </a>
-      </div>
+    <header class="shell">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="#home">XIMNET</a>
+        <div class="navlinks" aria-label="Sections">
+          <a href="#solutions">Solutions</a>
+          <a href="#why">Why XIMNET</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
     </header>
 
-    <main id="content">
-      <section class="hero section container">
-        <div class="hero-copy">
-          <p class="eyebrow">Editorial chatbot platform</p>
-          <h1>The first answer, with editorial discipline.</h1>
-          <p class="lede">
-            XIMNET helps support, CX, and ops teams answer in brand voice, ground every reply in approved context,
-            and hand off cleanly when the issue needs a person.
+    <main id="main">
+      <section class="shell hero" id="home">
+        <div>
+          <p class="kicker" style="color: var(--accent); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 1rem;">AI agents built for operations</p>
+          <h1>Business automation that actually helps teams.</h1>
+          <p class="lead">
+            XIMNET designs AI Agent and automation systems for SME support, CX, and operations teams that want faster response times, cleaner workflows, and reliable outcomes—not another generic chatbot.
           </p>
-          <div class="hero-actions">
-            <a class="button button--solid" href="mailto:hello@ximnet.com?subject=Book%20a%20demo%20with%20XIMNET">
-              Book a demo
-            </a>
-            <a class="button button--ghost" href="#workflow">See how it works</a>
+          <div class="actions">
+            <a class="btn btn-primary" href="#contact">Book a consultation</a>
+            <a class="btn btn-secondary" href="#solutions">See what we automate</a>
           </div>
-          <ul class="hero-points" aria-label="Key benefits">
-            <li>Brand voice</li>
-            <li>Approved context</li>
-            <li>Clear handoff</li>
-          </ul>
         </div>
 
-        <figure class="workspace" aria-label="Editorial preview of the XIMNET experience">
-          <div class="workspace__chrome">
-            <span class="workspace__brand">XIMNET LIVE</span>
-            <span class="workspace__status"><span class="status-dot" aria-hidden="true"></span> 12 active threads</span>
+        <aside class="hero-panel" aria-label="Summary panel">
+          <p class="panel-note">Built for leaders who need automation to reduce manual effort, improve consistency, and stay aligned with the way their business actually works.</p>
+          <div class="metrics">
+            <div class="metric">
+              <strong>Support workflows</strong>
+              <span>Route repetitive requests, triage tickets, and keep response quality consistent.</span>
+            </div>
+            <div class="metric">
+              <strong>CX operations</strong>
+              <span>Automate handoffs, surface context, and make customer journeys easier to manage.</span>
+            </div>
+            <div class="metric">
+              <strong>Back-office automation</strong>
+              <span>Remove repetitive operational steps so teams can focus on decisions, not admin.</span>
+            </div>
           </div>
-
-          <div class="workspace__poster" aria-hidden="true">
-            <svg viewBox="0 0 920 560" xmlns="http://www.w3.org/2000/svg">
-              <rect width="920" height="560" fill="#FFFFFF" />
-              <rect x="28" y="28" width="864" height="504" rx="8" fill="#F7F8FA" stroke="#E5E7EB" />
-
-              <text x="60" y="78" class="poster-overline">XIMNET / EDITORIAL SYSTEM</text>
-              <text x="60" y="160" class="poster-title">The first answer,</text>
-              <text x="60" y="218" class="poster-title">in your voice.</text>
-              <text x="60" y="262" class="poster-body">Approved context. Clear escalation.</text>
-              <text x="60" y="286" class="poster-body">Quiet control for support, CX, and ops.</text>
-
-              <rect x="60" y="320" width="350" height="126" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
-              <text x="84" y="355" class="poster-label">CUSTOMER</text>
-              <text x="84" y="389" class="poster-copy">
-                <tspan x="84" dy="0">Can it use policy docs and live order data</tspan>
-                <tspan x="84" dy="22">together?</tspan>
-              </text>
-
-              <rect x="436" y="320" width="416" height="126" rx="8" fill="#00D1FF" />
-              <text x="460" y="355" class="poster-label poster-label--inverse">XIMNET</text>
-              <text x="460" y="387" class="poster-copy poster-copy--inverse">
-                <tspan x="460" dy="0">Yes. Approved sources first; visible</tspan>
-                <tspan x="460" dy="22">handoff when a person should take over.</tspan>
-              </text>
-
-              <rect x="60" y="472" width="178" height="42" rx="9999" fill="#00D1FF" />
-              <text x="84" y="499" class="poster-chip">Approved sources</text>
-
-              <rect x="250" y="472" width="154" height="42" rx="9999" fill="#FFFFFF" stroke="#E5E7EB" />
-              <text x="272" y="499" class="poster-chip">Human handoff</text>
-
-              <rect x="416" y="472" width="144" height="42" rx="9999" fill="#FFFFFF" stroke="#E5E7EB" />
-              <text x="438" y="499" class="poster-chip">Ops ready</text>
-
-              <rect x="578" y="472" width="232" height="42" rx="9999" fill="#FFFFFF" stroke="#E5E7EB" />
-              <text x="600" y="499" class="poster-chip">Knowledge that compounds</text>
-
-              <line x1="60" y1="538" x2="860" y2="538" stroke="#E5E7EB" />
-              <text x="60" y="526" class="poster-footnote">SOURCE-LED REPLIES / TRACEABLE ESCALATION / BRAND VOICE</text>
-            </svg>
-          </div>
-
-          <div class="workspace__grid">
-            <section class="workspace__thread" aria-label="Conversation">
-              <p class="thread-label">Customer</p>
-              <p class="bubble bubble--incoming">
-                Can your bot answer from our policy docs and order system at the same time?
-              </p>
-
-              <p class="thread-label thread-label--reply">XIMNET</p>
-              <p class="bubble bubble--outgoing">
-                Yes. It checks approved content first, pulls the live order context you allow, and keeps the handoff
-                visible when the issue needs a person.
-              </p>
-
-              <ul class="source-chips" aria-label="Connected sources">
-                <li>Help center</li>
-                <li>Order status</li>
-                <li>Escalation policy</li>
-              </ul>
-            </section>
-
-            <aside class="workspace__panel">
-              <h2>What the bot checks</h2>
-              <ul class="check-list">
-                <li>Approved docs before it replies</li>
-                <li>Policy conflicts before it promises</li>
-                <li>Clear routing rules when it should stop</li>
-              </ul>
-              <div class="workspace__note">
-                Every reply is logged, so operators can review what changed and tighten the playbook.
-              </div>
-            </aside>
-          </div>
-        </figure>
+        </aside>
       </section>
 
-      <section id="capabilities" class="section container">
+      <section class="shell section" id="solutions">
         <div class="section-head">
-          <h2>Built for the queue, not the hype.</h2>
-          <p>
-            Support leaders need fewer repeats, better escalation, and a clean trail when something matters. XIMNET
-            is built to do all three without turning the interface into a black box.
-          </p>
+          <h2>Automation with a point of view.</h2>
+          <p>We combine strategy, implementation, and practical AI systems to remove friction where teams feel it most.</p>
         </div>
+        <div class="features">
+          <article class="feature">
+            <span class="kicker">01</span>
+            <h3>AI agents for service teams</h3>
+            <p>Deploy agents that can answer, route, summarize, and escalate with clear business rules instead of guesswork.</p>
+          </article>
+          <article class="feature">
+            <span class="kicker">02</span>
+            <h3>Workflow automation</h3>
+            <p>Reduce repetitive manual work across support, CX, and ops with systems that fit the process you already run.</p>
+          </article>
+          <article class="feature">
+            <span class="kicker">03</span>
+            <h3>Knowledge sharing systems</h3>
+            <p>Make company knowledge easier to find, reuse, and operationalize so teams can act with more confidence.</p>
+          </article>
+        </div>
+      </section>
 
-        <div class="capabilities-grid">
-          <aside class="statement-panel">
+      <section class="shell section" id="why">
+        <div class="split">
+          <div class="quote">
+            <strong>Built to do good for clients.</strong>
             <p>
-              The first answer should feel like your best operator \u2014 fast, calm, and grounded in the way your team
-              actually works.
+              XIMNET is designed to make the customer experience better and the operator's day lighter. The outcome is not novelty; it's better work, less friction, and more reliable service.
             </p>
-          </aside>
-
-          <div class="feature-lines">
-            <article class="feature-line">
-              <h3>Answer from your own sources.</h3>
-              <p>
-                XIMNET reads approved help content, policies, and connected systems before it speaks, so replies stay
-                useful and on brand.
-              </p>
-            </article>
-            <article class="feature-line">
-              <h3>Escalate with context.</h3>
-              <p>
-                When an issue is sensitive or unclear, the bot hands off the conversation with the thread intact and
-                a clear reason for the transfer.
-              </p>
-            </article>
-            <article class="feature-line">
-              <h3>Learn from what repeats.</h3>
-              <p>
-                Operators can see recurring questions, tighten the playbook, and turn routine support into shared
-                knowledge instead of hidden noise.
-              </p>
-            </article>
+          </div>
+          <div class="proof">
+            <p>
+              Why teams choose XIMNET:
+            </p>
+            <ul>
+              <li>Practical AI that supports real workflows, not hype.</li>
+              <li>Clear communication for decision-makers and operators.</li>
+              <li>Bold branding that signals leadership and credibility.</li>
+            </ul>
           </div>
         </div>
-      </section>
 
-      <section id="workflow" class="section container">
-        <div class="section-head section-head--compact">
-          <h2>How a question moves through XIMNET.</h2>
-          <p>
-            One flow, three decisions. That keeps the experience clear for customers and gives operators a system
-            they can explain.
-          </p>
-        </div>
-
-        <ol class="process" aria-label="Workflow steps">
-          <li>
-            <span class="step-index">01</span>
-            <div>
-              <h3>Read the request.</h3>
-              <p>
-                XIMNET identifies intent, urgency, and the kind of answer the customer is looking for before it
-                responds.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span class="step-index">02</span>
-            <div>
-              <h3>Use approved context.</h3>
-              <p>
-                It checks the content and systems you connect, then keeps the response inside the boundaries your team
-                set.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span class="step-index">03</span>
-            <div>
-              <h3>Resolve or hand off.</h3>
-              <p>
-                If the answer is safe, it resolves the request. If not, it escalates with context so the next person
-                starts ahead.
-              </p>
-            </div>
-          </li>
-        </ol>
-      </section>
-
-      <section id="compare" class="section container">
-        <div class="section-head section-head--compact">
-          <h2>What changes after launch.</h2>
-          <p>
-            The goal is not to replace support. It is to keep the first answer from being random and make the next
-            step easier to see.
-          </p>
-        </div>
-
-        <div class="compare-wrap" role="region" aria-label="XIMNET comparison table">
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th scope="col">What matters</th>
-                <th scope="col">Generic chatbot</th>
-                <th scope="col">XIMNET</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Support load</th>
-                <td>Answers from a script, then stalls.</td>
-                <td>Answers from approved content and routes edge cases.</td>
-              </tr>
-              <tr>
-                <th scope="row">Tone</th>
-                <td>Feels templated and detached.</td>
-                <td>Matches your voice and stays consistent.</td>
-              </tr>
-              <tr>
-                <th scope="row">Escalation</th>
-                <td>Forgets the thread.</td>
-                <td>Hands off with context and a clear reason.</td>
-              </tr>
-              <tr>
-                <th scope="row">Knowledge sharing</th>
-                <td>Stays buried in tickets.</td>
-                <td>Turns repeated questions into a visible playbook.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="demo" class="section container">
-        <div class="cta-band">
+        <div class="cta" id="contact">
           <div>
-            <p class="eyebrow eyebrow--inverted">Book a demo</p>
-            <h2>Bring your team the first answer.</h2>
-            <p>
-              See how XIMNET fits your docs, your policies, and your support workflow without making the stack more
-              complicated.
-            </p>
+            <h2 style="font-size: clamp(1.6rem, 2.8vw, 2.2rem);">Ready to rethink how your team works?</h2>
+            <p>Let’s map the highest-friction tasks in your support, CX, or operations flow and identify where AI can remove the most manual work.</p>
           </div>
-          <a class="button button--solid" href="mailto:hello@ximnet.com?subject=Book%20a%20demo%20with%20XIMNET">
-            Book a demo
-          </a>
+          <a class="btn btn-primary" href="mailto:hello@ximnet.com">Start the conversation</a>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer container">
-      <p>XIMNET \u2014 chatbot for support, CX, and ops.</p>
-      <a href="#top">Back to top</a>
+    <footer class="shell footer">
+      © XIMNET. AI Agent and Business Automation for SMEs.
     </footer>
   </body>
 </html>

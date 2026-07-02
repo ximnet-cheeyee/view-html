@@ -21,7 +21,6 @@
         h1 { margin: 0 0 10px 0; color: #050505; }
         .subtitle { color: #65676b; font-size: 1.1rem; margin: 0; }
 
-        /* The container for each loop item */
         .review-card {
             background-color: #ffffff;
             margin-bottom: 60px;
@@ -42,7 +41,7 @@
         }
         .card-title { font-size: 1.3rem; font-weight: 600; margin: 0; color: #050505; }
 
-        .controls { display: flex; gap: 8px; }
+        .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         .btn {
             background-color: #f0f2f5;
             border: none;
@@ -58,36 +57,73 @@
         .btn.active { background-color: #0064d2; color: #ffffff; }
         .btn-external { background-color: #e7f3ff; color: #1877f2; text-decoration: none;}
 
+        /* Zoom controls */
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border-left: 1px solid #e4e6eb;
+            padding-left: 8px;
+            margin-left: 4px;
+        }
+        .zoom-btn {
+            background-color: #f0f2f5;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #050505;
+        }
+        .zoom-btn:hover { background-color: #e4e6eb; }
+        .zoom-label {
+            font-size: 0.85rem;
+            color: #65676b;
+            min-width: 42px;
+            text-align: center;
+            user-select: none;
+        }
+
+        /* The wrapper centers the scaled device frame and scrolls if the
+           scaled content is still taller than the visible area. */
         .iframe-wrapper {
             display: flex;
             justify-content: center;
+            align-items: flex-start;
             background-color: #f7f8fa;
             padding: 20px;
             border-radius: 8px;
             border: 1px dashed #ccd0d5;
-            overflow: hidden; /* Keeps scaled down iframes from overflowing */
+            overflow: auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* NEW: This inner container controls the visible window area */
-        .iframe-scale-container {
-            width: 100%;
-            height: 700px;
-            transition: width 0.3s ease, height 0.3s ease;
+        /* This outer box is sized to the SCALED (visible) dimensions.
+           It clips the transformed iframe so no extra whitespace appears. */
+        .frame-scale-box {
             overflow: hidden;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%; 
-            border: 1px solid #ccd0d5;
+            flex-shrink: 0;
             border-radius: 6px;
-            background-color: #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transform-origin: top left; /* Forces scaling to happen from top-left */
-            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+            border: 1px solid #ccd0d5;
+            background: #fff;
         }
 
-        /* Message displayed if absolutely no files are found yet */
+        /* The iframe itself is ALWAYS set to the real device width/height
+           (e.g. a true 1440px desktop or 375px phone), so the page inside
+           computes its CSS (vw units, media queries, breakpoints) exactly
+           as it would on that real device. We then visually shrink the
+           whole thing with transform:scale so it fits on screen - this is
+           the same technique Chrome DevTools' device toolbar uses. */
+        iframe {
+            border: none;
+            display: block;
+            transform-origin: top left;
+        }
+
         #no-files-msg {
             display: none;
             text-align: center;
@@ -109,109 +145,134 @@
     <div id="no-files-msg"><h3>No active attempt files found in this folder yet.</h3></div>
 
     <script>
-        // CONFIGURATION: Set the maximum number of attempts you want to check for.
-        const maxAttempts = 20; 
+        const maxAttempts = 20;
         const container = document.getElementById('review-container');
         let filesFoundCount = 0;
 
-        // Async function allows us to check files safely in the background
+        // Real device viewport sizes (CSS px). The iframe is always this
+        // exact size internally - only the on-screen DISPLAY is scaled.
+        const DEVICE_SIZES = {
+            desktop: { width: 1440, height: 900 },
+            tablet:  { width: 768,  height: 1024 }, // iPad portrait
+            mobile:  { width: 375,  height: 812 }   // iPhone-style portrait
+        };
+
+        // Per-frame state: current device + current zoom scale
+        const frameState = {};
+
         async function loadReviewPortal() {
             for (let i = 1; i <= maxAttempts; i++) {
                 const fileName = `test-${i}.html`;
                 const cardId = `card-${i}`;
                 const frameId = `frame-${i}`;
-                const containerId = `scale-container-${i}`;
+                const boxId = `box-${i}`;
+                const zoomLabelId = `zoom-${i}`;
 
                 try {
-                    // Check if file exists without triggering the browser security block
                     const response = await fetch(fileName, { method: 'HEAD' });
-                    
+
                     if (response.ok) {
                         filesFoundCount++;
-                        
-                        // UPDATED: Added iframe-scale-container around the iframe
+
                         const cardHtml = `
                             <div class="review-card" id="${cardId}">
                                 <div class="card-header">
                                     <h2 class="card-title">Attempt ${i}</h2>
                                     <div class="controls">
-                                        <button class="btn active" onclick="resizeFrame('${i}', 'desktop', this)">🖥️ Desktop</button>
-                                        <button class="btn" onclick="resizeFrame('${i}', 'tablet', this)">📟 Tablet View</button>
-                                        <button class="btn" onclick="resizeFrame('${i}', 'mobile', this)">📱 Mobile View</button>
+                                        <button class="btn active" onclick="setDevice('${frameId}', 'desktop', this)">🖥️ Desktop</button>
+                                        <button class="btn" onclick="setDevice('${frameId}', 'tablet', this)">📟 Tablet</button>
+                                        <button class="btn" onclick="setDevice('${frameId}', 'mobile', this)">📱 Mobile</button>
                                         <a class="btn btn-external" href="${fileName}" target="_blank">🔗 Full Screen</a>
+                                        <div class="zoom-controls">
+                                            <button class="zoom-btn" onclick="adjustZoom('${frameId}', -0.1)" title="Zoom out">−</button>
+                                            <span class="zoom-label" id="${zoomLabelId}">100%</span>
+                                            <button class="zoom-btn" onclick="adjustZoom('${frameId}', 0.1)" title="Zoom in">+</button>
+                                            <button class="zoom-btn" onclick="fitToView('${frameId}')" title="Fit to view">⤢</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="iframe-wrapper">
-                                    <div class="iframe-scale-container" id="${containerId}">
+                                <div class="iframe-wrapper" id="wrapper-${i}">
+                                    <div class="frame-scale-box" id="${boxId}">
                                         <iframe id="${frameId}" src="${fileName}"></iframe>
                                     </div>
                                 </div>
                             </div>
                         `;
                         container.innerHTML += cardHtml;
+
+                        frameState[frameId] = { device: 'desktop', scale: 0.7, boxId, zoomLabelId, wrapperId: `wrapper-${i}` };
+                        // Apply initial sizing once the element exists in the DOM
+                        applyFrame(frameId);
                     }
                 } catch (error) {
-                    // Fallback log if local testing blocks cross-origin requests
                     console.log(`Skipping index check for ${fileName}`);
                 }
             }
 
-            // If absolutely nothing matched, show a helpful fallback message
             if (filesFoundCount === 0) {
                 document.getElementById('no-files-msg').style.display = 'block';
             }
         }
 
-        // Run the checker script instantly as the page loads
         loadReviewPortal();
 
-        // UPDATED: Size and Scale control function
-        function resizeFrame(index, viewType, button) {
-            const frame = document.getElementById(`frame-${index}`);
-            const container = document.getElementById(`scale-container-${index}`);
-            
-            // Standard desktop base size to treat as the canvas width
-            const desktopWidth = 1200; 
+        // Recalculate the iframe's real size + CSS transform scale, then
+        // resize the clipping box to match the scaled (visible) footprint.
+        function applyFrame(frameId) {
+            const state = frameState[frameId];
+            const size = DEVICE_SIZES[state.device];
+            const frame = document.getElementById(frameId);
+            const box = document.getElementById(state.boxId);
 
-            if (viewType === 'desktop') {
-                // Reset to regular full width layout
-                container.style.width = "100%";
-                container.style.height = "700px";
-                frame.style.width = "100%";
-                frame.style.height = "100%";
-                frame.style.transform = "scale(1)";
-            } 
-            else if (viewType === 'tablet') {
-                // Targets a 768px wide bounding box
-                const targetWidth = 768;
-                const scaleFactor = targetWidth / desktopWidth; // 0.64
+            // Real device dimensions - this is what the page inside "sees".
+            frame.style.width = size.width + 'px';
+            frame.style.height = size.height + 'px';
+            frame.style.transform = `scale(${state.scale})`;
 
-                container.style.width = `${targetWidth}px`;
-                container.style.height = `${700 * scaleFactor}px`; // scale height to avoid whitespace
-                
-                frame.style.width = `${desktopWidth}px`;
-                frame.style.height = `${700 / scaleFactor}px`;
-                frame.style.transform = `scale(${scaleFactor})`;
-            } 
-            else if (viewType === 'mobile') {
-                // Targets a 375px wide bounding box
-                const targetWidth = 375;
-                const scaleFactor = targetWidth / desktopWidth; // ~0.31
+            // Shrink the visible box to match the scaled size so there's
+            // no leftover blank space around the scaled-down iframe.
+            box.style.width = (size.width * state.scale) + 'px';
+            box.style.height = (size.height * state.scale) + 'px';
 
-                container.style.width = `${targetWidth}px`;
-                container.style.height = `${700 * scaleFactor}px`;
-                
-                frame.style.width = `${desktopWidth}px`;
-                frame.style.height = `${700 / scaleFactor}px`;
-                frame.style.transform = `scale(${scaleFactor})`;
-            }
+            document.getElementById(state.zoomLabelId).textContent = Math.round(state.scale * 100) + '%';
+        }
 
-            // Update button active states
+        function setDevice(frameId, deviceKey, button) {
+            const state = frameState[frameId];
+            state.device = deviceKey;
+
             const parentControls = button.parentElement;
             const buttons = parentControls.getElementsByClassName('btn');
             for (let btn of buttons) { btn.classList.remove('active'); }
             button.classList.add('active');
+
+            // Auto-fit whenever the device changes, so desktop mockups
+            // that are wider than the card still appear in full.
+            fitToView(frameId);
         }
+
+        function adjustZoom(frameId, delta) {
+            const state = frameState[frameId];
+            state.scale = Math.min(2, Math.max(0.25, +(state.scale + delta).toFixed(2)));
+            applyFrame(frameId);
+        }
+
+        // Scales the frame down so its full width fits within the visible
+        // wrapper, without ever scaling UP past 100% (avoids blurriness).
+        function fitToView(frameId) {
+            const state = frameState[frameId];
+            const size = DEVICE_SIZES[state.device];
+            const wrapper = document.getElementById(state.wrapperId);
+            const availableWidth = wrapper.clientWidth - 40; // account for wrapper padding
+            const fitScale = Math.min(1, availableWidth / size.width);
+            state.scale = +fitScale.toFixed(2);
+            applyFrame(frameId);
+        }
+
+        // Re-fit all frames on window resize so scaling stays accurate.
+        window.addEventListener('resize', () => {
+            Object.keys(frameState).forEach(fitToView);
+        });
     </script>
 
 </body>

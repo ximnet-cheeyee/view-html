@@ -56,7 +56,7 @@
         }
         .btn:hover { background-color: #e4e6eb; }
         .btn.active { background-color: #0064d2; color: #ffffff; }
-        .btn-external { background-color: #e7f3ff; color: #1877f2; }
+        .btn-external { background-color: #e7f3ff; color: #1877f2; text-decoration: none;}
 
         .iframe-wrapper {
             display: flex;
@@ -75,71 +75,80 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: width 0.3s ease;
         }
+        /* Message displayed if absolutely no files are found yet */
+        #no-files-msg {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 12px;
+            color: #65676b;
+        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Internal Design Review Portal</h1>
-        <p class="subtitle">Reviewing all layout attempts sequentially. Missing attempts are automatically hidden.</p>
+        <p class="subtitle">Reviewing all layout attempts sequentially. Missing attempts are automatically bypassed.</p>
     </header>
 
-    <!-- This empty div is where JavaScript will inject all your iframe cards -->
     <div id="review-container"></div>
+    <div id="no-files-msg"><h3>No active attempt files found in this folder yet.</h3></div>
 
     <script>
-        // CONFIGURATION: Set the maximum number of attempts you think you'll ever have.
-        // If you set this to 20, it checks for files test-1.html up to test-20.html.
+        // CONFIGURATION: Set the maximum number of attempts you want to check for.
         const maxAttempts = 20; 
-
         const container = document.getElementById('review-container');
+        let filesFoundCount = 0;
 
-        // This loop automatically builds your sections
-        for (let i = 1; i <= maxAttempts; i++) {
-            const fileName = `test-${i}.html`;
-            const cardId = `card-${i}`;
-            const frameId = `frame-${i}`;
+        // Async function allows us to check files safely in the background
+        async function loadReviewPortal() {
+            for (let i = 1; i <= maxAttempts; i++) {
+                const fileName = `test-${i}.html`;
+                const cardId = `card-${i}`;
+                const frameId = `frame-${i}`;
 
-            // Create the card template
-            const cardHtml = `
-                <div class="review-card" id="${cardId}">
-                    <div class="card-header">
-                        <h2 class="card-title">Attempt ${i}</h2>
-                        <div class="controls">
-                            <button class="btn active" onclick="resizeFrame('${frameId}', '100%', this)">🖥️ Desktop</button>
-                            <button class="btn" onclick="resizeFrame('${frameId}', '768px', this)">📟 Tablet</button>
-                            <button class="btn" onclick="resizeFrame('${frameId}', '375px', this)">📱 Mobile</button>
-                            <a class="btn btn-external" href="${fileName}" target="_blank">🔗 Full Screen</a>
-                        </div>
-                    </div>
-                    <div class="iframe-wrapper">
-                        <iframe id="${frameId}" src="${fileName}" onload="checkFileExists(this, '${cardId}')" onerror="hideCard('${cardId}')"></iframe>
-                    </div>
-                </div>
-            `;
-
-            // Append it to the page
-            container.innerHTML += cardHtml;
-        }
-
-        // Helper function: If the iframe loads a "404 Not Found" page, hide the whole card!
-        function checkFileExists(iframe, cardId) {
-            try {
-                // If the browser blocks reading the iframe content due to security, 
-                // it means the file loaded perfectly. If it's a 404, we can usually detect it.
-                if (iframe.contentDocument && (iframe.contentDocument.title.includes("404") || iframe.contentDocument.body.innerHTML === "")) {
-                    document.getElementById(cardId).style.display = 'none';
+                try {
+                    // Check if file exists without triggering the browser security block
+                    const response = await fetch(fileName, { method: 'HEAD' });
+                    
+                    if (response.ok) {
+                        filesFoundCount++;
+                        
+                        // Build the card layout dynamically only if the file exists!
+                        const cardHtml = `
+                            <div class="review-card" id="${cardId}">
+                                <div class="card-header">
+                                    <h2 class="card-title">Attempt ${i}</h2>
+                                    <div class="controls">
+                                        <button class="btn active" onclick="resizeFrame('${frameId}', '100%', this)">🖥️ Desktop</button>
+                                        <button class="btn" onclick="resizeFrame('${frameId}', '768px', this)">📟 Tablet</button>
+                                        <button class="btn" onclick="resizeFrame('${frameId}', '375px', this)">📱 Mobile</button>
+                                        <a class="btn btn-external" href="${fileName}" target="_blank">🔗 Full Screen</a>
+                                    </div>
+                                </div>
+                                <div class="iframe-wrapper">
+                                    <iframe id="${frameId}" src="${fileName}"></iframe>
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += cardHtml;
+                    }
+                } catch (error) {
+                    // Fallback log if local testing blocks cross-origin requests
+                    console.log(`Skipping index check for ${fileName}`);
                 }
-            } catch (e) {
-                // Security policy blocked reading. This is actually a good sign! 
-                // It means the HTML file loaded successfully. Do nothing and keep it visible.
+            }
+
+            // If absolutely nothing matched, show a helpful fallback message
+            if (filesFoundCount === 0) {
+                document.getElementById('no-files-msg').style.display = 'block';
             }
         }
 
-        // Helper function: Fallback to hide the card if the load fails completely
-        function hideCard(cardId) {
-            document.getElementById(cardId).style.display = 'none';
-        }
+        // Run the checker script instantly as the page loads
+        loadReviewPortal();
 
         // Size control function
         function resizeFrame(frameId, width, button) {

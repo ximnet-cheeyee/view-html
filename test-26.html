@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XIMNET — Enterprise chatbot platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Libre+Franklin:wght@600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+  --surface: #f5faff;
+  --surface-dim: #d0dce4;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #eaf5fe;
+  --surface-container: #e4eff8;
+  --surface-container-high: #deeaf2;
+  --surface-container-highest: #d9e4ed;
+  --on-surface: #121d23;
+  --on-surface-variant: #45474c;
+  --inverse-surface: #273238;
+  --inverse-on-surface: #e7f2fb;
+  --outline: #76777d;
+  --outline-variant: #c6c6cd;
+  --primary: #0e1726;
+  --on-primary: #ffffff;
+  --secondary: #ba0715;
+  --on-secondary: #ffffff;
+  --tertiary: #001925;
+  --electric-blue: #00c2ff;
+  --vibrant-red: #b50012;
+  --deep-navy: #232b3b;
+  --slate-gray: #3d484f;
+  --off-white: #f8f9fa;
+  --shadow: 0 10px 30px rgba(35, 43, 59, 0.1);
+  --shadow-soft: 0 4px 20px rgba(35, 43, 59, 0.05);
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  color: var(--on-surface);
+  background: var(--surface);
+}
+
+.page {
+  width: min(1280px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 40px 0 80px;
+}
+
+.topbar, .card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.topbar {
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  padding: 18px 22px; margin-bottom: 24px;
+}
+.brand, h1, h2 { font-family: "Libre Franklin", sans-serif; }
+.brand { font-weight: 800; letter-spacing: 0.08em; color: var(--primary); }
+.nav { display: flex; gap: 24px; flex-wrap: wrap; }
+.nav a { color: var(--on-surface-variant); text-decoration: none; font-weight: 600; }
+.nav a:hover { color: var(--primary); }
+
+.hero {
+  display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px;
+  padding: 36px; margin-bottom: 24px;
+}
+h1 {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 10px 0 16px;
+  max-width: 12ch;
+}
+h2 { font-size: clamp(22px, 3vw, 36px); line-height: 1.2; letter-spacing: -0.01em; margin: 8px 0 12px; }
+.body-lg { font-size: 18px; line-height: 1.6; color: var(--on-surface-variant); }
+.body-md { font-size: 16px; line-height: 1.5; color: var(--on-surface-variant); }
+.eyebrow, .label, .chips, .ticker, .status-pill, .bullet-list { font-size: 14px; }
+.eyebrow { font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--secondary); margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 20px; }
+.chips span {
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  color: var(--slate-gray);
+}
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 18px; border-radius: var(--radius);
+  font-weight: 700; text-decoration: none; border: 1px solid transparent;
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+.button:hover { transform: translateY(-2px); }
+.button-primary { background: var(--secondary); color: var(--on-secondary); }
+.button-primary:hover { background: #99050f; }
+.button-secondary { background: transparent; border-color: var(--electric-blue); color: var(--primary); }
+.button-secondary:hover { background: rgba(0, 194, 255, 0.08); }
+.button-outline { background: transparent; border-color: var(--outline-variant); color: var(--primary); }
+
+.card-inset, .split, .cta, .ticker { border-radius: var(--radius); }
+.hero-demo { padding: 20px; background: var(--surface-container-low); border: 1px solid var(--outline-variant); }
+.demo-top, .metrics { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.demo-top { margin-bottom: 20px; }
+.label { color: var(--on-surface-variant); margin: 0 0 4px; }
+.status-pill { display: inline-flex; align-items: center; gap: 8px; color: var(--on-surface-variant); }
+.status-pill span { width: 8px; height: 8px; border-radius: 50%; background: var(--electric-blue); box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.14); }
+.demo-window { display: grid; gap: 12px; min-height: 320px; align-content: center; }
+.message { max-width: 86%; padding: 14px 16px; border-radius: 4px; line-height: 1.55; border: 1px solid var(--outline-variant); background: var(--surface-container-lowest); }
+.message.user { margin-left: auto; background: var(--surface-container); }
+.message.accent { border-left: 4px solid var(--secondary); }
+.metrics { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--outline-variant); }
+.metrics span { display: block; color: var(--on-surface-variant); font-size: 14px; margin-bottom: 4px; }
+.metrics strong { font-size: 16px; color: var(--primary); }
+
+.ticker { overflow: hidden; margin-bottom: 24px; background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); }
+.ticker-track {
+  display: flex; gap: 28px; width: max-content; padding: 14px 0; white-space: nowrap;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--on-surface-variant);
+  animation: marquee 20s linear infinite;
+}
+.ticker span { position: relative; }
+.ticker span::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 10px; background: var(--electric-blue); }
+
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.grid-3 .card { padding: 24px; }
+.grid-3 p { color: var(--on-surface-variant); line-height: 1.6; }
+
+.split {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  padding: 24px; margin-bottom: 24px; background: var(--surface-container-lowest);
+}
+.bullet-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.bullet-list li { position: relative; padding-left: 18px; color: var(--on-surface-variant); }
+.bullet-list li::before { content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; background: var(--electric-blue); }
+
+.cta { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 24px; background: var(--primary); color: var(--inverse-on-surface); }
+.cta h2, .cta .eyebrow { color: var(--inverse-on-surface); }
+.cta .button-primary { background: var(--secondary); }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 500ms ease, transform 500ms ease; }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+:focus-visible { outline: 2px solid var(--electric-blue); outline-offset: 3px; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+@media (max-width: 960px) {
+  .page { width: min(100% - 32px, 100%); }
+  .hero, .grid-3, .split, .cta, .topbar { grid-template-columns: 1fr; display: grid; }
+  .topbar, .cta { justify-content: start; }
+  .nav { gap: 16px; }
+}
+
+@media (max-width: 640px) {
+  .page { width: min(100% - 16px, 100%); padding: 16px 0 56px; }
+  .hero, .split, .cta { padding: 18px; }
+  .grid-3 { gap: 12px; }
+  .topbar { padding: 16px; }
+  .demo-window { min-height: 260px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <div class="brand">XIMNET</div>
+        <nav class="nav">
+          <a href="#platform">Platform</a>
+          <a href="#outcomes">Outcomes</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a class="button button-outline" href="#contact">Request demo</a>
+      </header>
+
+      <section class="hero card">
+        <div class="hero-copy">
+          <p class="eyebrow">Chatbot infrastructure</p>
+          <h1>Make every website visit feel answered.</h1>
+          <p class="body-lg">
+            XIMNET helps support, sales, and success teams automate conversations with a precise chatbot that knows your content, your tone, and your routing rules.
+          </p>
+          <div class="chips" aria-label="Key capabilities">
+            <span>Knowledge aware</span>
+            <span>Human handoff</span>
+            <span>CRM sync</span>
+            <span>Analytics</span>
+          </div>
+          <div class="actions">
+            <a class="button button-primary" href="#contact">Book a demo</a>
+            <a class="button button-secondary" href="#platform">See platform</a>
+          </div>
+        </div>
+
+        <div class="hero-demo card-inset" aria-label="Live chatbot preview">
+          <div class="demo-top">
+            <div>
+              <p class="label">Live conversation</p>
+              <strong>Routing active</strong>
+            </div>
+            <div class="status-pill"><span></span> operating</div>
+          </div>
+
+          <div class="demo-window">
+            <div class="message bot">Hi. I can answer product questions or route a lead.</div>
+            <div class="message user">Do you work with HubSpot?</div>
+            <div class="message bot accent">Yes — XIMNET syncs context, captures intent, and hands off cleanly.</div>
+          </div>
+
+          <div class="metrics">
+            <div><span>Detected intent</span><strong>Integration</strong></div>
+            <div><span>Next action</span><strong>Open sales queue</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ticker card" aria-label="Capabilities ticker">
+        <div class="ticker-track">
+          <span>Support</span><span>Sales</span><span>Success</span><span>Lead capture</span><span>Answering</span><span>Routing</span>
+          <span>Support</span><span>Sales</span><span>Success</span><span>Lead capture</span><span>Answering</span><span>Routing</span>
+        </div>
+      </section>
+
+      <section id="platform" class="grid-3">
+        <article class="card reveal">
+          <p class="eyebrow">Control</p>
+          <h2>Keep the bot sharp.</h2>
+          <p>Set tone, fallback rules, and response boundaries so the assistant stays useful under pressure.</p>
+        </article>
+        <article class="card reveal">
+          <p class="eyebrow">Automation</p>
+          <h2>Move people faster.</h2>
+          <p>Qualify visitors, book meetings, or send a clean handoff before the conversation loses momentum.</p>
+        </article>
+        <article class="card reveal">
+          <p class="eyebrow">Visibility</p>
+          <h2>See what converts.</h2>
+          <p>Track questions, drop-off points, and outcomes so the chatbot becomes part of your funnel.</p>
+        </article>
+      </section>
+
+      <section id="outcomes" class="split card reveal">
+        <div>
+          <p class="eyebrow">Outcomes</p>
+          <h2>A precise system for support and demand.</h2>
+          <p class="body-md">
+            Built for teams that want a serious chatbot product, not a decorative widget. The interface is clean, editorial, and direct.
+          </p>
+        </div>
+        <ul class="bullet-list">
+          <li>Deflect common tickets</li>
+          <li>Capture qualified leads</li>
+          <li>Sync with your CRM</li>
+          <li>Hand off to a human when needed</li>
+        </ul>
+      </section>
+
+      <section class="cta card reveal">
+        <div>
+          <p class="eyebrow">Start here</p>
+          <h2>Put XIMNET on your site.</h2>
+        </div>
+        <a id="contact" class="button button-primary" href="mailto:hello@ximnet.ai">hello@ximnet.ai</a>
+      </section>
+    </main>
+    <script>const reveals = document.querySelectorAll('.reveal');
+const ticker = document.querySelector('.ticker-track');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) entry.target.classList.add('in-view');
+  });
+}, { threshold: 0.2 });
+
+reveals.forEach((el) => observer.observe(el));
+
+if (ticker) {
+  const clone = ticker.cloneNode(true);
+  ticker.parentElement.appendChild(clone);
+}
+
+const demo = document.querySelector('.hero-demo');
+if (demo && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  document.addEventListener('pointermove', (e) => {
+    const rect = demo.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
+    demo.style.transform = `translateY(-1px) rotateX(${-y}deg) rotateY(${x}deg)`;
+  });
+  document.addEventListener('pointerleave', () => {
+    demo.style.transform = 'none';
+  });
+}</script>
+  </body>
+</html>

@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XIMNET — Conversational infrastructure for modern teams</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Libre+Franklin:wght@600;700;800&display=swap" rel="stylesheet" />
+    <style>:root {
+  --surface: #f5faff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #eaf5fe;
+  --surface-container: #e4eff8;
+  --surface-container-high: #deeaf2;
+  --surface-container-highest: #d9e4ed;
+  --on-surface: #121d23;
+  --on-surface-variant: #45474c;
+  --outline-variant: #c6c6cd;
+  --primary: #0e1726;
+  --secondary: #ba0715;
+  --electric-blue: #00c2ff;
+  --slate-gray: #3d484f;
+  --shadow-soft: 0 4px 20px rgba(35, 43, 59, 0.05);
+  --shadow: 0 10px 30px rgba(35, 43, 59, 0.1);
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: Inter, sans-serif; color: var(--on-surface); background: var(--surface); }
+.page { width: min(1280px, calc(100% - 80px)); margin: 0 auto; padding: 40px 0 80px; }
+.card { background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+.brand, h1, h2 { font-family: "Libre Franklin", sans-serif; }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 22px; margin-bottom: 24px; }
+.brand { font-weight: 800; letter-spacing: 0.12em; color: var(--primary); }
+.nav { display: flex; gap: 24px; flex-wrap: wrap; }
+.nav a { color: var(--on-surface-variant); text-decoration: none; font-weight: 600; }
+
+.hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px; margin-bottom: 24px; align-items: stretch; }
+.hero-left, .hero-right { padding: 36px; }
+.hero-left { background: linear-gradient(180deg, var(--surface-container-lowest), var(--surface-container-low)); border: 1px solid var(--outline-variant); border-radius: var(--radius); }
+.hero-right { background: linear-gradient(180deg, var(--surface-container-lowest), var(--surface-container)); border: 1px solid var(--outline-variant); border-radius: var(--radius); }
+.eyebrow, .label, .ticker-track, .status-pill, .mini-spec li, .steps span { font-size: 14px; }
+.eyebrow { font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--secondary); margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 54px); line-height: 1.08; letter-spacing: -0.02em; margin: 10px 0 16px; max-width: 11ch; }
+h2 { font-size: clamp(22px, 3vw, 36px); line-height: 1.2; margin: 8px 0 12px; }
+.body-lg { font-size: 18px; line-height: 1.6; color: var(--on-surface-variant); }
+.body-md { font-size: 16px; line-height: 1.5; color: var(--on-surface-variant); }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 26px 0 18px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border-radius: var(--radius); font-weight: 700; text-decoration: none; border: 1px solid transparent; transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease; }
+.button:hover { transform: translateY(-2px); }
+.button-primary { background: var(--secondary); color: white; }
+.button-primary:hover { background: #99050f; }
+.button-secondary { border-color: var(--electric-blue); color: var(--primary); background: transparent; }
+.button-secondary:hover { background: rgba(0, 194, 255, 0.08); }
+.button-outline { border-color: var(--outline-variant); color: var(--primary); background: transparent; }
+
+.signal-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; overflow: hidden; margin-top: 20px; }
+.signal-row > div { padding: 18px 16px; background: var(--surface-container-lowest); }
+.signal-row .label { display: block; color: var(--on-surface-variant); margin-bottom: 4px; }
+.signal-row strong { color: var(--primary); font-size: 16px; }
+
+.panel-head, .panel-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.panel-foot { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--outline-variant); }
+.status-pill { display: inline-flex; align-items: center; gap: 8px; color: var(--on-surface-variant); }
+.status-pill span { width: 8px; height: 8px; border-radius: 50%; background: var(--electric-blue); box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.14); }
+
+.conversation-map { position: relative; min-height: 360px; display: grid; gap: 12px; align-content: center; padding: 10px 0 18px; }
+.map-node { padding: 14px 16px; border: 1px solid var(--outline-variant); border-radius: var(--radius); background: var(--surface-container-lowest); width: fit-content; max-width: 82%; }
+.map-node.answer { margin-left: 10%; }
+.map-node.route { margin-left: 22%; }
+.map-node.handoff { margin-left: 34%; }
+.map-node.highlight { border-left: 4px solid var(--secondary); }
+.map-path { position: absolute; inset: 20px 0 20px auto; width: 2px; background: linear-gradient(var(--electric-blue), transparent); }
+.path-dot { position: absolute; left: -4px; top: 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--electric-blue); box-shadow: 0 0 20px rgba(0, 194, 255, 0.7); animation: travel 4.5s ease-in-out infinite; }
+
+.ticker { overflow: hidden; margin-bottom: 24px; border: 1px solid var(--outline-variant); background: var(--surface-container-lowest); }
+.ticker-track { display: flex; gap: 28px; width: max-content; padding: 14px 0; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; color: var(--on-surface-variant); animation: marquee 18s linear infinite; }
+.ticker span::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 10px; background: var(--electric-blue); }
+
+.platform-grid { display: grid; grid-template-columns: 1.2fr 0.8fr 0.7fr; gap: 16px; margin-bottom: 24px; }
+.platform-grid .card { padding: 24px; }
+.tall { min-height: 240px; }
+.quote { background: var(--surface-container-low); }
+.mini-spec ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+.mini-spec li { position: relative; padding-left: 18px; color: var(--on-surface-variant); }
+.mini-spec li::before { content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; background: var(--electric-blue); }
+
+.orchestration, .cta { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 24px; margin-bottom: 24px; }
+.orchestration { background: linear-gradient(180deg, var(--surface-container-lowest), var(--surface-container-low)); }
+.steps { display: grid; gap: 12px; min-width: 280px; }
+.steps div { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; padding: 14px 16px; border-radius: var(--radius); background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); }
+.steps span { color: var(--secondary); font-weight: 700; }
+.steps p { margin: 0; color: var(--on-surface-variant); }
+
+.cta { background: var(--primary); color: white; }
+.cta h2, .cta .eyebrow, .cta p { color: white; }
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 500ms ease, transform 500ms ease; }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+:focus-visible { outline: 2px solid var(--electric-blue); outline-offset: 3px; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes travel { 0%, 100% { transform: translateY(0); opacity: 0.7; } 50% { transform: translateY(290px); opacity: 1; } }
+
+@media (max-width: 960px) {
+  .page { width: min(100% - 32px, 100%); }
+  .hero, .platform-grid, .orchestration, .cta, .topbar { grid-template-columns: 1fr; display: grid; }
+  .topbar, .cta, .orchestration { justify-content: start; }
+  .signal-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .page { width: min(100% - 16px, 100%); padding: 16px 0 56px; }
+  .hero-left, .hero-right, .platform-grid .card, .orchestration, .cta { padding: 18px; }
+  .topbar { padding: 16px; }
+  .map-node.answer, .map-node.route, .map-node.handoff { margin-left: 0; max-width: 100%; }
+  .conversation-map { min-height: 300px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}</style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar card">
+        <div class="brand">XIMNET</div>
+        <nav class="nav">
+          <a href="#platform">Platform</a>
+          <a href="#orchestration">Orchestration</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a class="button button-outline" href="#contact">Request demo</a>
+      </header>
+
+      <section class="hero">
+        <div class="hero-left reveal">
+          <p class="eyebrow">Chatbot infrastructure</p>
+          <h1>Turn every visit into a guided conversation.</h1>
+          <p class="body-lg">
+            XIMNET is a serious chatbot platform for support, sales, and customer success — built to answer, qualify, and hand off with precision.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#contact">Book a demo</a>
+            <a class="button button-secondary" href="#platform">Explore platform</a>
+          </div>
+
+          <div class="signal-row card">
+            <div><span class="label">Coverage</span><strong>24/7</strong></div>
+            <div><span class="label">First reply</span><strong>60s</strong></div>
+            <div><span class="label">Integrations</span><strong>50+</strong></div>
+          </div>
+        </div>
+
+        <aside class="hero-right reveal card" aria-label="Live chatbot orchestration">
+          <div class="panel-head">
+            <div>
+              <p class="label">Live routing</p>
+              <strong>Conversation map</strong>
+            </div>
+            <div class="status-pill"><span></span><em>active</em></div>
+          </div>
+
+          <div class="conversation-map">
+            <div class="map-node prompt">Visitor asks a question</div>
+            <div class="map-node answer highlight">XIMNET answers from your knowledge base</div>
+            <div class="map-node route">High intent → sales queue</div>
+            <div class="map-node handoff">Low confidence → human handoff</div>
+            <div class="map-path">
+              <span class="path-dot"></span>
+            </div>
+          </div>
+
+          <div class="panel-foot">
+            <div>
+              <span class="label">Detected intent</span>
+              <strong>Pricing + integrations</strong>
+            </div>
+            <div>
+              <span class="label">Next action</span>
+              <strong>Book meeting</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="ticker card" aria-label="Capabilities ticker">
+        <div class="ticker-track">
+          <span>Answer</span><span>Qualify</span><span>Route</span><span>Handoff</span><span>Learn</span><span>Close</span>
+          <span>Answer</span><span>Qualify</span><span>Route</span><span>Handoff</span><span>Learn</span><span>Close</span>
+        </div>
+      </section>
+
+      <section id="platform" class="platform-grid">
+        <article class="card reveal tall">
+          <p class="eyebrow">Platform</p>
+          <h2>Not a widget. An operating layer.</h2>
+          <p>
+            Train on docs, set tone rules, and connect the right actions so the assistant behaves like part of the product team.
+          </p>
+        </article>
+
+        <article class="card reveal quote">
+          <p class="eyebrow">Why it stands out</p>
+          <h2>Designed like a control room.</h2>
+          <p>
+            The interface uses structure, contrast, and motion to show how decisions travel through the system.
+          </p>
+        </article>
+
+        <article class="card reveal mini-spec">
+          <p class="eyebrow">Signals</p>
+          <ul>
+            <li>Knowledge aware</li>
+            <li>Human escalation</li>
+            <li>CRM sync</li>
+            <li>Analytics</li>
+          </ul>
+        </article>
+      </section>
+
+      <section id="orchestration" class="orchestration card reveal">
+        <div class="orchestration-copy">
+          <p class="eyebrow">Orchestration</p>
+          <h2>A chatbot with a route, not just a response.</h2>
+          <p class="body-md">
+            XIMNET keeps momentum across the entire conversation — from first question to qualified handoff — without losing context or tone.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div><span>01</span><p>Detect intent</p></div>
+          <div><span>02</span><p>Answer with source context</p></div>
+          <div><span>03</span><p>Escalate or convert</p></div>
+        </div>
+      </section>
+
+      <section class="cta card reveal">
+        <div>
+          <p class="eyebrow">Launch</p>
+          <h2>Put XIMNET on your site this week.</h2>
+        </div>
+        <a id="contact" class="button button-primary" href="mailto:hello@ximnet.ai">hello@ximnet.ai</a>
+      </section>
+    </main>
+    <script>const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) entry.target.classList.add('in-view');
+  });
+}, { threshold: 0.18 });
+reveals.forEach((el) => observer.observe(el));
+
+const hero = document.querySelector('.hero-right');
+if (hero && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  document.addEventListener('pointermove', (e) => {
+    const rect = hero.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
+    hero.style.transform = `translateY(-1px) rotateX(${-y}deg) rotateY(${x}deg)`;
+  });
+  document.addEventListener('pointerleave', () => {
+    hero.style.transform = 'none';
+  });
+}</script>
+  </body>
+</html>

@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit — the command center for focused work</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>:root {
+  --bg: #05070d;
+  --panel: rgba(12, 17, 28, 0.7);
+  --panel-strong: rgba(17, 23, 36, 0.92);
+  --text: #f2efe8;
+  --muted: rgba(242, 239, 232, 0.72);
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #7cf7d4;
+  --accent-2: #ffb86b;
+  --accent-3: #9aa8ff;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(124, 247, 212, 0.16), transparent 22%),
+    radial-gradient(circle at 85% 20%, rgba(154, 168, 255, 0.16), transparent 18%),
+    radial-gradient(circle at 80% 85%, rgba(255, 184, 107, 0.1), transparent 20%),
+    var(--bg);
+  font-family: "Inter", system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+.ambient {
+  position: fixed;
+  inset: auto;
+  width: 42vw;
+  height: 42vw;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+  animation: drift 18s ease-in-out infinite alternate;
+}
+.ambient-left { left: -12vw; top: -8vw; background: rgba(124, 247, 212, 0.28); }
+.ambient-right { right: -14vw; top: 18vh; background: rgba(154, 168, 255, 0.2); animation-delay: -9s; }
+
+.page-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 18px 0 56px;
+}
+
+.hero, .workflow, .proof, .pricing, .marquee { margin-top: 18px; }
+.hero {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(16, 21, 35, 0.92), rgba(9, 12, 20, 0.88));
+  box-shadow: var(--shadow);
+}
+.topbar, .hero-grid, .feature-band, .proof { display: grid; gap: 18px; }
+.topbar { grid-template-columns: 1fr auto; align-items: center; margin-bottom: 40px; }
+.brand { display: inline-flex; gap: 10px; align-items: center; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.brand-mark { width: 12px; height: 12px; border-radius: 50%; background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent)); box-shadow: 0 0 24px rgba(124, 247, 212, 0.7); }
+.topnav { display: flex; gap: 18px; color: var(--muted); font-size: 0.95rem; }
+.topnav a:hover { color: var(--text); }
+
+.hero-grid { grid-template-columns: 1.05fr 0.95fr; align-items: center; }
+.eyebrow, .card-kicker, .step-index { text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.72rem; color: var(--accent); font-weight: 700; }
+h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 0.92; margin: 0; }
+h1 { font-size: clamp(3.5rem, 9vw, 7.4rem); max-width: 9.5ch; }
+h2 { font-size: clamp(2rem, 4vw, 3.8rem); }
+h3 { font-size: 1.55rem; line-height: 1.05; }
+.lede, .feature-card p, .quote p, .step-card p, .pricing-card p, .insight-panel p, .center-card p { color: var(--muted); font-size: 1.02rem; line-height: 1.65; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 28px 0 26px; }
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 50px; padding: 0 20px; border-radius: 999px;
+  font-weight: 700; transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
+}
+.button:hover { transform: translateY(-1px); }
+.button:focus-visible, .topnav a:focus-visible, .queue-item:focus-visible {
+  outline: 3px solid rgba(124, 247, 212, 0.35);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+.button-primary { background: linear-gradient(135deg, var(--accent), #56e0bb); color: #03110d; }
+.button-secondary { border: 1px solid var(--line); background: rgba(255,255,255,0.03); }
+
+.hero-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.metric {
+  padding: 16px; border-radius: 20px; background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+}
+.metric-label { display: block; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; }
+.metric strong { display: block; font-size: 1.45rem; margin-bottom: 6px; }
+.metric small { color: var(--muted); line-height: 1.45; }
+
+.orbit-stage {
+  padding: 18px; border-radius: 28px; background: linear-gradient(180deg, rgba(12, 18, 30, 0.95), rgba(10, 13, 22, 0.92));
+  border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.orbit-stage__top, .queue-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chip { padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.06); }
+.orbit-canvas {
+  position: relative; aspect-ratio: 1; margin: 16px 0; border-radius: 30px;
+  background: radial-gradient(circle at 50% 50%, rgba(124, 247, 212, 0.08), transparent 36%);
+  overflow: hidden;
+}
+.orbit-ring {
+  position: absolute; inset: 50%; transform: translate(-50%, -50%);
+  border-radius: 50%; border: 1px solid rgba(255,255,255,0.09);
+}
+.ring-outer { width: 92%; height: 92%; animation: spin 36s linear infinite; }
+.ring-mid { width: 68%; height: 68%; animation: spin 24s linear infinite reverse; }
+.ring-inner { width: 42%; height: 42%; border-color: rgba(124, 247, 212, 0.22); animation: pulse 4.5s ease-in-out infinite; }
+.center-card {
+  position: absolute; inset: 50%; transform: translate(-50%, -50%);
+  width: 44%; min-width: 210px; aspect-ratio: 1; display: grid; place-items: center; text-align: center;
+  padding: 20px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 40px rgba(255,255,255,0.03);
+}
+.center-card__label { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.7rem; }
+.center-card h2 { font-size: clamp(1.9rem, 3vw, 3rem); color: var(--text); }
+.satellite {
+  position: absolute; padding: 12px 14px; border-radius: 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+}
+.satellite span { display: block; color: var(--muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; }
+.satellite-a { left: 6%; top: 18%; animation: float 7s ease-in-out infinite; }
+.satellite-b { right: 4%; top: 22%; animation: float 8s ease-in-out infinite reverse; }
+.satellite-c { right: 16%; bottom: 8%; animation: float 6s ease-in-out infinite; }
+
+.task-queue { display: grid; gap: 10px; }
+.queue-item {
+  width: 100%; border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text);
+  border-radius: 18px; padding: 14px 16px; cursor: pointer; transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+.queue-item:hover { transform: translateY(-1px); border-color: rgba(124, 247, 212, 0.22); }
+.queue-item.active { background: rgba(124, 247, 212, 0.08); border-color: rgba(124, 247, 212, 0.26); }
+.queue-item span { font-weight: 600; }
+.queue-item strong { color: var(--muted); font-size: 0.92rem; }
+
+.marquee {
+  overflow: hidden; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,0.03);
+}
+.marquee-track {
+  display: flex; gap: 42px; white-space: nowrap; padding: 15px 0; width: max-content;
+  animation: marquee 28s linear infinite;
+}
+.marquee-track span { color: var(--muted); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.78rem; }
+
+.feature-band { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.feature-card, .step-card, .quote, .insight-panel, .pricing-card, .section-heading {
+  border: 1px solid var(--line); border-radius: 26px; background: var(--panel); box-shadow: var(--shadow); backdrop-filter: blur(10px);
+}
+.feature-card { padding: 22px; }
+.section-heading { padding: 20px 22px; margin-bottom: 16px; }
+.workflow { padding: 2px 0; }
+.steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.step-card { padding: 20px; }
+.step-index { color: var(--accent-2); display: inline-block; margin-bottom: 18px; }
+
+.proof { grid-template-columns: 1fr 1fr; align-items: stretch; }
+.quote, .insight-panel, .pricing-card { padding: 26px; }
+.quote { display: grid; align-content: center; }
+.quote p { font-size: 1.3rem; color: var(--text); }
+.bars { display: grid; gap: 14px; margin-top: 18px; }
+.bars div { display: grid; gap: 8px; }
+.bars span { color: var(--muted); font-size: 0.88rem; }
+.bars i { display: block; height: 10px; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: var(--w); box-shadow: 0 0 24px rgba(124, 247, 212, 0.15); }
+
+.pricing { display: grid; place-items: center; }
+.pricing-card { width: min(780px, 100%); text-align: center; }
+.pricing-card .cta-row { justify-content: center; }
+
+.reveal { opacity: 0; transform: translateY(18px) scale(0.985); transition: opacity 700ms ease, transform 700ms ease; }
+.reveal.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(18px, -16px, 0) scale(1.06); } }
+@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.03); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+@media (max-width: 920px) {
+  .hero-grid, .feature-band, .proof, .steps-grid, .hero-metrics { grid-template-columns: 1fr; }
+  .topbar { grid-template-columns: 1fr; justify-items: start; }
+  h1 { max-width: 11ch; }
+}
+
+@media (max-width: 640px) {
+  .page-shell { width: min(100% - 16px, 1180px); padding-top: 8px; }
+  .hero { padding: 16px; border-radius: 24px; }
+  .topnav { gap: 12px; flex-wrap: wrap; }
+  .cta-row { flex-direction: column; }
+  .button { width: 100%; }
+  .orbit-canvas { aspect-ratio: 0.95; }
+  .center-card { width: 52%; min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}</style>
+  </head>
+  <body>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="page-shell">
+      <section class="hero">
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-mark"></span>
+            <span>Orbit</span>
+          </div>
+          <nav class="topnav" aria-label="Primary">
+            <a href="#features">Features</a>
+            <a href="#workflow">Workflow</a>
+            <a href="#proof">Proof</a>
+          </nav>
+        </header>
+
+        <div class="hero-grid">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">A command center, not another task list</p>
+            <h1>Keep your work in orbit and your attention on one sharp line.</h1>
+            <p class="lede">
+              Orbit turns planning into a living workspace: a focused task, a timer, a clean queue, and just enough motion to help you feel what matters now.
+            </p>
+            <div class="cta-row">
+              <a class="button button-primary magnetic" href="#pricing">Start free</a>
+              <a class="button button-secondary magnetic" href="#features">Explore the system</a>
+            </div>
+
+            <div class="hero-metrics" aria-label="Product metrics">
+              <div class="metric">
+                <span class="metric-label">Focus sessions</span>
+                <strong>06:40</strong>
+                <small>resets automatically between blocks</small>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Clarity score</span>
+                <strong>92%</strong>
+                <small>less switching, more finishing</small>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Daily plan</span>
+                <strong>3 moves</strong>
+                <small>enough structure to start now</small>
+              </div>
+            </div>
+          </div>
+
+          <aside class="orbit-stage reveal" aria-label="Live app preview">
+            <div class="orbit-stage__top">
+              <span>Live day</span>
+              <span class="chip" id="clock">--:--</span>
+            </div>
+
+            <div class="orbit-canvas">
+              <div class="orbit-ring ring-outer"></div>
+              <div class="orbit-ring ring-mid"></div>
+              <div class="orbit-ring ring-inner"></div>
+
+              <div class="center-card">
+                <p class="center-card__label">Next action</p>
+                <h2 id="focusTask">Write launch note</h2>
+                <p><span id="focusTimer">24</span> min left · one task at a time</p>
+              </div>
+
+              <div class="satellite satellite-a">
+                <span>Inbox</span>
+                <strong>12</strong>
+              </div>
+              <div class="satellite satellite-b">
+                <span>Today</span>
+                <strong>04</strong>
+              </div>
+              <div class="satellite satellite-c">
+                <span>Deep work</span>
+                <strong>88</strong>
+              </div>
+            </div>
+
+            <div class="task-queue" aria-label="Task queue">
+              <button class="queue-item active" type="button" data-task="Write launch note" data-minutes="24">
+                <span>Write launch note</span><strong>09:00</strong>
+              </button>
+              <button class="queue-item" type="button" data-task="Review deck" data-minutes="18">
+                <span>Review deck</span><strong>10:15</strong>
+              </button>
+              <button class="queue-item" type="button" data-task="Ship update" data-minutes="14">
+                <span>Ship update</span><strong>11:30</strong>
+              </button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="marquee" aria-label="Product highlights">
+        <div class="marquee-track">
+          <span>Focus blocks that breathe</span>
+          <span>Task queue with intent</span>
+          <span>Live day overview</span>
+          <span>Gentle motion, no noise</span>
+          <span>Keyboard-first controls</span>
+          <span>Focus blocks that breathe</span>
+          <span>Task queue with intent</span>
+          <span>Live day overview</span>
+          <span>Gentle motion, no noise</span>
+          <span>Keyboard-first controls</span>
+        </div>
+      </section>
+
+      <section class="feature-band" id="features">
+        <article class="feature-card reveal">
+          <p class="card-kicker">Sense</p>
+          <h3>See the shape of the day before it starts collapsing.</h3>
+          <p>Orbit surfaces the next decision, the current block, and the tasks waiting just beyond it.</p>
+        </article>
+        <article class="feature-card reveal">
+          <p class="card-kicker">Steady</p>
+          <h3>Use motion to guide attention, not to decorate the page.</h3>
+          <p>Subtle orbiting, staged reveals, and progress cues help the interface feel alive without feeling busy.</p>
+        </article>
+        <article class="feature-card reveal">
+          <p class="card-kicker">Close</p>
+          <h3>Finish with a clean handoff into tomorrow.</h3>
+          <p>End the session with a summary, a carry-forward task, and a calmer starting point for the next day.</p>
+        </article>
+      </section>
+
+      <section class="workflow" id="workflow">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Workflow</p>
+          <h2>Three moves. No ceremony.</h2>
+        </div>
+
+        <div class="steps-grid">
+          <article class="step-card reveal">
+            <span class="step-index">01</span>
+            <h3>Pin the next action</h3>
+            <p>Choose the one thing worth your attention, then let the rest wait politely.</p>
+          </article>
+          <article class="step-card reveal">
+            <span class="step-index">02</span>
+            <h3>Lock the block</h3>
+            <p>Set time, mute distractions, and keep a visible sense of progress while you work.</p>
+          </article>
+          <article class="step-card reveal">
+            <span class="step-index">03</span>
+            <h3>Land the work</h3>
+            <p>Finish, archive, and hand the next step to tomorrow without rebuilding the whole plan.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="proof" id="proof">
+        <div class="quote reveal">
+          <p>“It feels like my day got a cockpit. I can see what’s next without staring at a wall of cards.”</p>
+          <span>— Jordan, design lead</span>
+        </div>
+        <div class="insight-panel reveal">
+          <p class="eyebrow">Real-time guidance</p>
+          <h2>Everything important stays visible, and everything else gets out of the way.</h2>
+          <div class="bars">
+            <div><span>Planning</span><i style="--w: 88%"></i></div>
+            <div><span>Focus</span><i style="--w: 95%"></i></div>
+            <div><span>Completion</span><i style="--w: 83%"></i></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing" id="pricing">
+        <div class="pricing-card reveal">
+          <p class="eyebrow">Get started</p>
+          <h2>Try Orbit free for 14 days.</h2>
+          <p>No credit card. No onboarding maze. Just a sharper place to work from.</p>
+          <div class="cta-row">
+            <a class="button button-primary magnetic" href="#">Create account</a>
+            <a class="button button-secondary magnetic" href="#features">See the system</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>const tasks = [
+  { name: 'Write launch note', minutes: 24 },
+  { name: 'Review deck', minutes: 18 },
+  { name: 'Ship update', minutes: 14 },
+  { name: 'Plan tomorrow', minutes: 20 },
+];
+
+const focusTask = document.getElementById('focusTask');
+const focusTimer = document.getElementById('focusTimer');
+const clock = document.getElementById('clock');
+const queueItems = Array.from(document.querySelectorAll('.queue-item'));
+const revealItems = Array.from(document.querySelectorAll('.reveal'));
+const magnetic = Array.from(document.querySelectorAll('.magnetic'));
+
+let activeIndex = 0;
+
+function setTask(index) {
+  activeIndex = index;
+  const task = tasks[index];
+  focusTask.textContent = task.name;
+  focusTimer.textContent = String(task.minutes);
+  queueItems.forEach((item, i) => item.classList.toggle('active', i === index));
+}
+
+function tickClock() {
+  const now = new Date();
+  clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+queueItems.forEach((item, index) => {
+  item.addEventListener('click', () => setTask(index));
+});
+
+setInterval(() => setTask((activeIndex + 1) % tasks.length), 4200);
+setTask(0);
+tickClock();
+setInterval(tickClock, 1000);
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) entry.target.classList.add('is-visible');
+  });
+}, { threshold: 0.15 });
+
+revealItems.forEach((item) => observer.observe(item));
+
+function applyMagnetic(el, evt) {
+  const rect = el.getBoundingClientRect();
+  const x = ((evt.clientX - rect.left) / rect.width - 0.5) * 12;
+  const y = ((evt.clientY - rect.top) / rect.height - 0.5) * 12;
+  el.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+magnetic.forEach((el) => {
+  el.addEventListener('mousemove', (evt) => applyMagnetic(el, evt));
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+});
+
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  document.documentElement.style.setProperty('--scroll', scrolled.toString());
+});</script>
+  </body>
+</html>

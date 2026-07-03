@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pulse — productivity that keeps your day in motion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>:root {
+  --bg: #f4efe6;
+  --panel: rgba(255, 252, 247, 0.78);
+  --panel-strong: #fffaf2;
+  --text: #1e2320;
+  --muted: #5d665f;
+  --line: rgba(30, 35, 32, 0.12);
+  --accent: #0f6d63;
+  --accent-soft: #d9efe9;
+  --accent-warm: #d89b68;
+  --shadow: 0 20px 60px rgba(31, 36, 33, 0.12);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(15, 109, 99, 0.08), transparent 28%),
+    radial-gradient(circle at 85% 15%, rgba(216, 155, 104, 0.18), transparent 22%),
+    var(--bg);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.page-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 48px; }
+.hero, .workflow, .social-proof { margin-top: 24px; }
+.hero { padding: 20px; border: 1px solid var(--line); border-radius: 28px; background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.45)); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+.topbar, .hero-grid, .feature-band, .social-proof { display: grid; gap: 20px; }
+.topbar { grid-template-columns: 1fr auto; align-items: center; margin-bottom: 36px; }
+.brand { display: inline-flex; gap: 10px; align-items: center; font-weight: 800; letter-spacing: 0.02em; }
+.brand-mark { color: var(--accent); font-size: 1.1rem; }
+.topnav { display: flex; gap: 18px; color: var(--muted); font-size: 0.95rem; }
+.hero-grid { grid-template-columns: 1.2fr 0.8fr; align-items: center; }
+.eyebrow, .card-kicker, .step-index { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.76rem; color: var(--accent); font-weight: 700; }
+h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 0.95; margin: 0; }
+h1 { font-size: clamp(3.2rem, 8vw, 6.4rem); max-width: 10ch; }
+h2 { font-size: clamp(2rem, 4vw, 3.5rem); }
+h3 { font-size: 1.5rem; line-height: 1.05; }
+.lede, .feature-card p, .cta-card p, .quote p, .steps p, .focus-meta { color: var(--muted); font-size: 1.02rem; line-height: 1.6; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 28px 0 24px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border-radius: 999px; font-weight: 700; transition: transform 180ms ease, background 180ms ease, border-color 180ms ease; }
+.button:hover { transform: translateY(-1px); }
+.button:focus-visible, .topnav a:focus-visible { outline: 3px solid rgba(15, 109, 99, 0.25); outline-offset: 3px; border-radius: 999px; }
+.button-primary { background: var(--accent); color: white; }
+.button-secondary { border: 1px solid var(--line); background: rgba(255,255,255,0.45); }
+.hero-stats { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.hero-stats li { padding-top: 14px; border-top: 1px solid var(--line); }
+.hero-stats strong { display: block; font-size: 1.2rem; margin-bottom: 6px; }
+.hero-stats span { color: var(--muted); font-size: 0.92rem; line-height: 1.45; }
+.focus-panel { padding: 18px; border-radius: 26px; background: linear-gradient(180deg, rgba(15,109,99,0.96), rgba(10,82,74,0.94)); color: white; box-shadow: 0 18px 55px rgba(15,109,99,0.22); }
+.focus-panel__header, .task-stack li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chip { padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.13); font-size: 0.84rem; }
+.focus-ring { display: grid; place-items: center; aspect-ratio: 1; margin: 18px 0; border-radius: 50%; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.16), rgba(255,255,255,0.05) 55%, transparent 56%); border: 1px solid rgba(255,255,255,0.18); }
+.focus-ring__inner { width: 72%; aspect-ratio: 1; display: grid; place-items: center; text-align: center; padding: 20px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+.focus-label { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem; opacity: 0.78; }
+.focus-panel h2 { font-size: clamp(1.8rem, 3vw, 2.8rem); color: white; }
+.focus-meta { color: rgba(255,255,255,0.8); font-size: 0.94rem; }
+.task-stack { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.task-stack li { padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); }
+.task-stack li.active { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.14); }
+.feature-band { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 20px; }
+.feature-card, .cta-card, .quote, .workflow, .section-heading { border: 1px solid var(--line); border-radius: 24px; background: var(--panel); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+.feature-card { padding: 22px; }
+.workflow { padding: 24px; }
+.section-heading { padding: 20px 22px; margin-bottom: 16px; }
+.steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.steps li { padding: 18px; border-radius: 20px; background: var(--panel-strong); border: 1px solid var(--line); }
+.steps .step-index { display: inline-block; margin-bottom: 18px; color: var(--accent-warm); }
+.social-proof { grid-template-columns: 1.1fr 0.9fr; align-items: stretch; }
+.quote, .cta-card { padding: 26px; }
+.quote { display: grid; align-content: center; }
+.quote p { font-size: 1.25rem; color: var(--text); }
+.quote span { color: var(--muted); }
+.cta-card { display: grid; gap: 14px; }
+.reveal { animation: rise 700ms ease both; }
+.reveal:nth-child(2) { animation-delay: 90ms; }
+.reveal:nth-child(3) { animation-delay: 180ms; }
+.reveal:nth-child(4) { animation-delay: 240ms; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 900px) {
+  .hero-grid, .feature-band, .social-proof, .steps { grid-template-columns: 1fr; }
+  .topbar { grid-template-columns: 1fr; justify-items: start; }
+  .hero-stats { grid-template-columns: 1fr; }
+  h1 { max-width: 12ch; }
+}
+
+@media (max-width: 600px) {
+  .page-shell { width: min(100% - 18px, 1120px); padding-top: 9px; }
+  .hero { padding: 16px; border-radius: 22px; }
+  .topnav { gap: 12px; flex-wrap: wrap; }
+  .cta-row { flex-direction: column; }
+  .button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}</style>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-mark">◌</span>
+            <span>Pulse</span>
+          </div>
+          <nav class="topnav" aria-label="Primary">
+            <a href="#features">Features</a>
+            <a href="#workflow">Workflow</a>
+            <a href="#pricing">Pricing</a>
+          </nav>
+        </header>
+
+        <div class="hero-grid">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">A calmer way to work</p>
+            <h1>Turn scattered tasks into one clear next move.</h1>
+            <p class="lede">
+              Pulse brings tasks, focus blocks, and daily planning into a single view so you can start faster, stay on track, and finish with less friction.
+            </p>
+            <div class="cta-row">
+              <a class="button button-primary" href="#pricing">Start free</a>
+              <a class="button button-secondary" href="#features">See how it works</a>
+            </div>
+            <ul class="hero-stats" aria-label="Highlights">
+              <li><strong>12 min</strong><span>average time saved planning the day</span></li>
+              <li><strong>3 views</strong><span>today, week, and focus</span></li>
+              <li><strong>Zero clutter</strong><span>built for quick decisions</span></li>
+            </ul>
+          </div>
+
+          <aside class="focus-panel reveal" aria-label="App preview">
+            <div class="focus-panel__header">
+              <span>Today</span>
+              <span class="chip">Focus mode</span>
+            </div>
+            <div class="focus-ring">
+              <div class="focus-ring__inner">
+                <p class="focus-label">Current focus</p>
+                <h2 id="focusTask">Write project brief</h2>
+                <p class="focus-meta"><span id="focusTimer">24</span> min left · one task at a time</p>
+              </div>
+            </div>
+            <ul class="task-stack" aria-label="Today’s tasks">
+              <li><span>Review inbox</span><strong>08:30</strong></li>
+              <li class="active"><span>Write project brief</span><strong>09:00</strong></li>
+              <li><span>Share notes</span><strong>10:15</strong></li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="feature-band" id="features">
+        <article class="feature-card reveal">
+          <p class="card-kicker">Plan</p>
+          <h3>See your day before it gets crowded.</h3>
+          <p>Arrange tasks into a simple agenda, then move them into focus blocks with one click.</p>
+        </article>
+        <article class="feature-card reveal">
+          <p class="card-kicker">Focus</p>
+          <h3>Protect deep work with gentle boundaries.</h3>
+          <p>Hide noise, silence irrelevant notifications, and keep your next action visible.</p>
+        </article>
+        <article class="feature-card reveal">
+          <p class="card-kicker">Review</p>
+          <h3>Close the loop without a weekly ritual.</h3>
+          <p>End each day with a quick summary of what moved, what stalled, and what to pick up tomorrow.</p>
+        </article>
+      </section>
+
+      <section class="workflow" id="workflow">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Workflow</p>
+          <h2>A simple rhythm for busy people.</h2>
+        </div>
+        <ol class="steps">
+          <li class="reveal"><span class="step-index">Pick</span><p>Choose the one task that matters most right now.</p></li>
+          <li class="reveal"><span class="step-index">Time</span><p>Set a focus block that matches the energy you have.</p></li>
+          <li class="reveal"><span class="step-index">Finish</span><p>Mark it done, then let the app surface the next best move.</p></li>
+        </ol>
+      </section>
+
+      <section class="social-proof">
+        <div class="quote reveal">
+          <p>"Pulse feels like someone cleared my desk, wrote the next step on a card, and set it in front of me."</p>
+          <span>— Lina, product manager</span>
+        </div>
+        <div class="cta-card reveal" id="pricing">
+          <p class="eyebrow">Get started</p>
+          <h2>Try it free for 14 days.</h2>
+          <p>No credit card. No setup maze. Just a cleaner way to plan tomorrow.</p>
+          <a class="button button-primary" href="#">Create account</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+  <script>
+    const tasks = [
+  'Write project brief',
+  'Review inbox',
+  'Share notes',
+  'Plan tomorrow',
+];
+
+let index = 0;
+const focusTask = document.getElementById('focusTask');
+const focusTimer = document.getElementById('focusTimer');
+
+function tick() {
+  index = (index + 1) % tasks.length;
+  focusTask.textContent = tasks[index];
+  focusTimer.textContent = String(24 - index * 3);
+}
+
+tick();
+setInterval(tick, 3200);
+  </script>
+</html>

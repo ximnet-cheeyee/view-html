@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XIMNET — Chatbots for modern teams</title>
+    <meta
+      name="description"
+      content="XIMNET builds fast, reliable chatbot experiences for support, sales, and internal operations."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      :root {
+  color-scheme: light dark;
+  --bg: #f5f7fb;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-strong: #ffffff;
+  --text: #0d1421;
+  --muted: #566074;
+  --line: rgba(13, 20, 33, 0.12);
+  --accent: #153bff;
+  --accent-2: #0f9d8b;
+  --shadow: 0 24px 80px rgba(14, 20, 36, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1020;
+    --surface: rgba(15, 22, 40, 0.76);
+    --surface-strong: #11192d;
+    --text: #eef2ff;
+    --muted: #a7b0c5;
+    --line: rgba(255, 255, 255, 0.1);
+    --accent: #7b91ff;
+    --accent-2: #34d1be;
+    --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(21, 59, 255, 0.12), transparent 30%),
+    radial-gradient(circle at top right, rgba(15, 157, 139, 0.1), transparent 25%),
+    var(--bg);
+  color: var(--text);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.18;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.35), transparent 85%);
+}
+
+a { color: inherit; text-decoration: none; }
+.page-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+.topbar { display:flex; justify-content:space-between; align-items:center; padding: 20px 0; position: sticky; top: 0; backdrop-filter: blur(18px); z-index: 20; }
+.brand { display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:0.14em; }
+.brand-mark { width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--line); background:var(--surface); border-radius: 999px; box-shadow: var(--shadow); }
+.brand-name { font-size: 0.9rem; }
+.topbar-link { font-size:0.95rem; padding: 12px 16px; border:1px solid var(--line); border-radius:999px; background:var(--surface); }
+.section-grid { display:grid; gap: 24px; padding: 36px 0; }
+.hero { padding-top: 18px; }
+.hero-copy, .hero-panel, .feature-list article, .proof-item, .contact-banner { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); }
+.hero-copy { padding: 28px; }
+.eyebrow { margin:0 0 14px; font: 600 0.8rem/1.2 "IBM Plex Mono", monospace; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { margin: 0; line-height: 0.95; }
+h1 { font-size: clamp(3rem, 10vw, 6.5rem); letter-spacing: -0.06em; max-width: 11ch; }
+.lede { margin: 20px 0 0; font-size: 1.08rem; line-height: 1.7; color: var(--muted); max-width: 58ch; }
+.cta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 28px; }
+.button { min-height: 44px; display:inline-flex; align-items:center; justify-content:center; padding: 0 18px; border-radius:999px; border:1px solid var(--line); font-weight:600; }
+.button-primary { background: var(--accent); color: white; border-color: transparent; }
+.button-secondary { background: transparent; }
+.stats { margin: 28px 0 0; display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.stats div { padding-top: 14px; border-top: 1px solid var(--line); }
+.stats dt { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.04em; }
+.stats dd { margin: 8px 0 0; color: var(--muted); }
+.hero-panel { padding: 20px; align-self: stretch; }
+.panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; font: 600 0.78rem/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; }
+.panel-status { color: var(--accent-2); }
+.chat-window { display:grid; gap: 12px; }
+.bubble { padding: 14px 16px; border-radius: 18px; line-height: 1.55; max-width: 92%; border: 1px solid var(--line); }
+.bubble.bot { background: var(--surface-strong); }
+.bubble.user { margin-left: auto; background: rgba(21, 59, 255, 0.1); }
+.bubble.accent { background: rgba(15, 157, 139, 0.12); }
+.section-heading h2 { font-size: clamp(2rem, 4vw, 3.6rem); letter-spacing: -0.05em; max-width: 14ch; }
+.feature-list, .proof-grid { display:grid; gap: 16px; }
+.feature-list article, .proof-item { padding: 22px; }
+.feature-list h3 { font-size: 1.2rem; margin-bottom: 10px; }
+.feature-list p, .proof-item p { margin:0; color: var(--muted); line-height:1.65; }
+.proof-item { display:grid; gap: 10px; }
+.proof-item span { font: 600 0.8rem/1 "IBM Plex Mono", monospace; letter-spacing: 0.18em; color: var(--accent); }
+.contact-banner { padding: 26px; display:flex; align-items:center; justify-content:space-between; gap: 18px; }
+.contact-banner h2 { font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -0.05em; max-width: 11ch; }
+
+@media (min-width: 720px) {
+  .hero { grid-template-columns: 1.2fr 0.8fr; align-items: stretch; }
+  .features-section, .proof-section { grid-template-columns: 0.85fr 1.15fr; }
+  .feature-list, .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .proof-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .section-grid { padding: 48px 0; }
+  .hero-copy { padding: 36px; }
+  .hero-panel { padding: 28px; }
+}
+
+@media (min-width: 980px) {
+  .page-shell { width: min(1200px, calc(100% - 56px)); }
+  .section-grid { gap: 28px; }
+  .hero-copy { padding: 44px; }
+  .contact-banner { padding: 32px 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#home" aria-label="XIMNET home">
+          <span class="brand-mark">X</span>
+          <span class="brand-name">XIMNET</span>
+        </a>
+        <a class="topbar-link" href="#contact">Book a demo</a>
+      </header>
+
+      <main id="home">
+        <section class="hero section-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">AI chatbots for support, sales, and ops</p>
+            <h1>Ship a chatbot that answers fast and learns with every conversation.</h1>
+            <p class="lede">
+              XIMNET designs conversational assistants that reduce ticket volume,
+              qualify leads, and keep your team focused on the work that matters.
+            </p>
+            <div class="cta-row">
+              <a class="button button-primary" href="#contact">Start a pilot</a>
+              <a class="button button-secondary" href="#features">See capabilities</a>
+            </div>
+            <dl class="stats" aria-label="Key metrics">
+              <div>
+                <dt>24/7</dt>
+                <dd>instant answers</dd>
+              </div>
+              <div>
+                <dt>48 hrs</dt>
+                <dd>typical launch</dd>
+              </div>
+              <div>
+                <dt>+32%</dt>
+                <dd>higher conversion</dd>
+              </div>
+            </dl>
+          </div>
+
+          <aside class="hero-panel" aria-label="Chatbot preview">
+            <div class="panel-head">
+              <span class="panel-label">LIVE DEMO</span>
+              <span class="panel-status">Connected</span>
+            </div>
+            <div class="chat-window">
+              <div class="bubble bot">Hi — I can help with pricing, onboarding, or technical questions.</div>
+              <div class="bubble user">Can you recommend the best plan for a 12-person support team?</div>
+              <div class="bubble bot accent">
+                Yes. For a 12-person team, the Growth plan is ideal: unlimited flows, CRM sync,
+                and human handoff.
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section id="features" class="section-grid features-section">
+          <div class="section-heading">
+            <p class="eyebrow">Capabilities</p>
+            <h2>Built for useful conversations, not novelty.</h2>
+          </div>
+          <div class="feature-list">
+            <article>
+              <h3>Support automation</h3>
+              <p>Resolve FAQs, track orders, triage issues, and hand off complex cases to agents.</p>
+            </article>
+            <article>
+              <h3>Lead qualification</h3>
+              <p>Capture intent, route high-value prospects, and keep your pipeline moving.</p>
+            </article>
+            <article>
+              <h3>Knowledge grounding</h3>
+              <p>Answer from your docs, help center, and product data so responses stay accurate.</p>
+            </article>
+            <article>
+              <h3>Analytics</h3>
+              <p>See deflection, response quality, and conversion performance in one dashboard.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-grid proof-section">
+          <div class="section-heading">
+            <p class="eyebrow">Why XIMNET</p>
+            <h2>Enterprise-ready without the enterprise drag.</h2>
+          </div>
+          <div class="proof-grid">
+            <div class="proof-item">
+              <span>01</span>
+              <p>Secure deployment options and role-based access.</p>
+            </div>
+            <div class="proof-item">
+              <span>02</span>
+              <p>Conversation flows tuned for your brand voice.</p>
+            </div>
+            <div class="proof-item">
+              <span>03</span>
+              <p>Fast iteration with human review and testing loops.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" class="contact-banner section-grid">
+          <div>
+            <p class="eyebrow">Get started</p>
+            <h2>Launch a chatbot pilot with XIMNET.</h2>
+          </div>
+          <a class="button button-primary" href="mailto:hello@ximnet.ai">hello@ximnet.ai</a>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

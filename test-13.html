@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XIMNET — AI Chatbots for Modern Teams</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <style>:root {
+  --bg: #07111f;
+  --panel: rgba(10, 20, 36, 0.72);
+  --panel-border: rgba(148, 163, 184, 0.16);
+  --text: #e5eefb;
+  --muted: #9db0c9;
+  --accent: #5eead4;
+  --accent-2: #60a5fa;
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top, #12213a 0%, var(--bg) 45%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+.nav, .hero, .metrics, .features, .cta {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+}
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+.logo {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border-radius: 12px; background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #04111f;
+}
+nav { display: flex; gap: 22px; align-items: center; color: var(--muted); }
+.nav-cta { color: var(--text); }
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  align-items: center;
+  padding: 80px 0 40px;
+}
+.eyebrow { color: var(--accent); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+h1 { font-size: clamp(3rem, 8vw, 5.8rem); line-height: 0.95; margin: 16px 0; max-width: 10ch; }
+p { color: var(--muted); line-height: 1.7; font-size: 1.05rem; }
+.hero-actions { display: flex; gap: 14px; margin: 30px 0 18px; }
+.button {
+  padding: 14px 20px; border-radius: 999px; font-weight: 600; transition: transform 160ms var(--ease-out), background 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+.button:active { transform: scale(0.97); }
+.primary { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #04111f; }
+.secondary { border: 1px solid var(--panel-border); background: rgba(255,255,255,0.03); }
+.trust-row { display: flex; gap: 18px; flex-wrap: wrap; color: #c8d6ea; font-size: 0.95rem; }
+.trust-row span { padding-left: 16px; position: relative; }
+.trust-row span::before { content: ''; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); transform: translateY(-50%); }
+.hero-card, .feature-grid article, .metrics > div, .cta {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+.hero-card { border-radius: 28px; padding: 24px; }
+.chat-window { display: grid; gap: 14px; }
+.chat-head { display: flex; align-items: center; gap: 10px; color: #d8e6f8; font-weight: 600; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 6px rgba(34,197,94,.12); }
+.chat-bubble { width: fit-content; max-width: 92%; padding: 14px 16px; border-radius: 18px; line-height: 1.5; }
+.bot { background: rgba(255,255,255,0.05); }
+.user { margin-left: auto; background: rgba(96,165,250,0.16); }
+.accent { background: linear-gradient(135deg, rgba(94,234,212,0.18), rgba(96,165,250,0.14)); }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px 0 90px; }
+.metrics > div, .feature-grid article, .cta { border-radius: 24px; padding: 24px; }
+.metrics strong { display: block; font-size: 2rem; margin-bottom: 8px; }
+.metrics span { color: var(--muted); }
+.section-head { max-width: 720px; margin-bottom: 22px; }
+.section-head h2, .cta h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin: 0 0 12px; }
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.feature-grid h3 { margin-top: 0; font-size: 1.2rem; }
+.cta { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin: 90px auto 60px; }
+.bg-orb { position: fixed; inset: auto; pointer-events: none; filter: blur(60px); opacity: 0.38; }
+.orb-1 { width: 320px; height: 320px; top: 90px; right: -80px; background: #2563eb; }
+.orb-2 { width: 260px; height: 260px; top: 420px; left: -80px; background: #14b8a6; }
+@media (max-width: 900px) {
+  .hero, .feature-grid, .metrics, .cta { grid-template-columns: 1fr; display: grid; }
+  .cta { text-align: left; }
+  nav { gap: 14px; }
+}
+@media (max-width: 640px) {
+  .nav { flex-direction: column; gap: 16px; }
+  h1 { max-width: 100%; }
+  .hero { padding-top: 48px; }
+  .hero-actions { flex-direction: column; }
+}
+</style>
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">X</div>
+        <span>XIMNET</span>
+      </div>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#results">Results</a>
+        <a href="#contact" class="nav-cta">Book a demo</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">AI chatbot platform for growth teams</div>
+          <h1>Automate conversations that convert.</h1>
+          <p>
+            XIMNET builds smart chatbots for support, sales, and operations — so your team
+            responds faster, captures more leads, and stays focused on high-value work.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#contact">Book a demo</a>
+            <a class="button secondary" href="#features">See features</a>
+          </div>
+          <div class="trust-row">
+            <span>24/7 coverage</span>
+            <span>Lead routing</span>
+            <span>Human handoff</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="chat-window">
+            <div class="chat-head">
+              <span class="dot"></span>
+              XIMNET Assistant
+            </div>
+            <div class="chat-bubble bot">How can I help your team today?</div>
+            <div class="chat-bubble user">We need to answer customer questions faster.</div>
+            <div class="chat-bubble bot accent">I can handle FAQs, qualify leads, and escalate complex issues.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics" id="results">
+        <div><strong>60%</strong><span>faster first response</span></div>
+        <div><strong>3x</strong><span>more qualified leads</span></div>
+        <div><strong>24/7</strong><span>always-on support</span></div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="section-head">
+          <h2>Everything you need in one chatbot layer.</h2>
+          <p>Deploy on your website, train on your content, and route the right conversations to the right people.</p>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <h3>Knowledge answers</h3>
+            <p>Connect docs, help centers, and FAQs so the bot replies with accurate company-specific information.</p>
+          </article>
+          <article>
+            <h3>Lead qualification</h3>
+            <p>Ask the right questions, score intent, and send hot leads straight to your sales team.</p>
+          </article>
+          <article>
+            <h3>Human handoff</h3>
+            <p>Escalate complex issues smoothly with full chat context preserved for your team.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta" id="contact">
+        <div>
+          <h2>See XIMNET in action.</h2>
+          <p>Get a tailored demo and learn how much time your team can save.</p>
+        </div>
+        <a class="button primary" href="mailto:hello@ximnet.ai">hello@ximnet.ai</a>
+      </section>
+    </main>
+  </body>
+</html>

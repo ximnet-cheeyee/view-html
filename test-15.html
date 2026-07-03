@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XIMNET — AI Chatbot Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <style>:root {
+  --bg: #060b16;
+  --panel: rgba(12, 18, 34, 0.72);
+  --panel-strong: rgba(15, 24, 44, 0.9);
+  --border: rgba(148, 163, 184, 0.14);
+  --text: #e7eefc;
+  --muted: #a1b2cc;
+  --accent: #6ee7d8;
+  --accent-2: #7aa7ff;
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(122, 167, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(110, 231, 216, 0.14), transparent 24%),
+    linear-gradient(180deg, #09111f 0%, var(--bg) 100%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+.noise {
+  position: fixed; inset: 0; pointer-events: none; opacity: 0.05;
+  background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+  background-size: 18px 18px;
+}
+.orb { position: fixed; width: 420px; height: 420px; filter: blur(80px); pointer-events: none; opacity: 0.28; }
+.orb-a { top: -80px; right: -120px; background: #2f6bff; }
+.orb-b { left: -120px; top: 42vh; background: #13c8b5; }
+.topbar, .hero, .proof, .section, .cta { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 0;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.mark {
+  width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #04111f; font-weight: 800;
+}
+.brand strong { display: block; }
+.brand span, .kicker, .lede, .proof span, .bullets div, .section-head p { color: var(--muted); }
+.topbar-link {
+  padding: 12px 18px; border-radius: 999px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); transition: transform 140ms var(--ease-out), background 140ms var(--ease-out);
+}
+.topbar-link:active, .btn:active { transform: scale(0.97); }
+.hero {
+  display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 30px; align-items: center;
+  padding: 72px 0 56px;
+}
+.kicker {
+  margin: 0 0 14px; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.78rem;
+}
+h1 { margin: 0; font-size: clamp(3.2rem, 8vw, 6.4rem); line-height: 0.92; letter-spacing: -0.04em; max-width: 8.8ch; }
+.lede { font-size: 1.12rem; line-height: 1.8; max-width: 58ch; margin: 22px 0 0; }
+.actions { display: flex; gap: 14px; margin-top: 30px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 14px 20px; border-radius: 999px; font-weight: 700;
+  transition: transform 140ms var(--ease-out), background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.btn-primary { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #04111f; }
+.btn-secondary { border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+.stats-inline { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; padding: 0; margin: 22px 0 0; }
+.stats-inline li { padding: 10px 14px; border: 1px solid var(--border); border-radius: 999px; background: rgba(255,255,255,0.03); }
+.hero-panel, .proof div, .grid article, .cta {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+.hero-panel { border-radius: 30px; padding: 18px; }
+.panel-shell { background: var(--panel-strong); border-radius: 24px; padding: 18px; display: grid; gap: 14px; }
+.panel-head { display: flex; align-items: center; gap: 10px; color: #d7e5fb; font-weight: 600; }
+.panel-meta { margin-left: auto; color: var(--muted); font-weight: 500; }
+.live-dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 6px rgba(34,197,94,.12); }
+.chat {
+  width: fit-content; max-width: 92%; padding: 14px 16px; border-radius: 18px;
+  line-height: 1.55; border: 1px solid rgba(255,255,255,0.04);
+}
+.chat-bot { background: rgba(255,255,255,0.05); }
+.chat-user { margin-left: auto; background: rgba(122, 167, 255, 0.16); }
+.accent { background: linear-gradient(135deg, rgba(110,231,216,0.16), rgba(122,167,255,0.14)); }
+.proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 10px 0 90px; }
+.proof div, .grid article, .cta { border-radius: 24px; padding: 24px; }
+.proof strong { display: block; font-size: 2rem; margin-bottom: 8px; }
+.section { padding: 0 0 88px; }
+.section-head h2, .cta h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.3rem); line-height: 1.02; }
+.section-head { margin-bottom: 22px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid article h3 { margin: 0 0 10px; font-size: 1.15rem; }
+.grid article p, .bullets div { margin: 0; line-height: 1.7; }
+.split { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 24px; align-items: start; }
+.bullets { display: grid; gap: 14px; }
+.bullets div { padding: 18px 18px 18px 20px; border-left: 2px solid rgba(110,231,216,0.45); background: rgba(255,255,255,0.03); border-radius: 16px; }
+.cta {
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  margin: 8px auto 64px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover, .topbar-link:hover { transform: translateY(-1px); }
+  .btn-secondary:hover, .topbar-link:hover { background: rgba(255,255,255,0.06); }
+}
+@media (max-width: 900px) {
+  .hero, .proof, .grid, .split, .cta { grid-template-columns: 1fr; display: grid; }
+  .cta { text-align: left; }
+  .topbar { gap: 16px; }
+}
+@media (max-width: 640px) {
+  .topbar { flex-direction: column; align-items: flex-start; }
+  .actions { flex-direction: column; }
+  h1 { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0ms !important;
+    transition-delay: 0ms !important;
+  }
+  .btn:hover, .topbar-link:hover, .btn:active, .topbar-link:active { transform: none; }
+  .orb { display: none; }
+}
+</style>
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">X</div>
+        <div>
+          <strong>XIMNET</strong>
+          <span>AI chatbots for modern teams</span>
+        </div>
+      </div>
+      <a class="topbar-link" href="#contact">Book a demo</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="kicker">Customer support • Lead capture • Internal assist</p>
+          <h1>Chatbot infrastructure that feels human.</h1>
+          <p class="lede">
+            XIMNET turns your knowledge, workflows, and support operations into one fast,
+            reliable conversational layer.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#contact">Book a demo</a>
+            <a class="btn btn-secondary" href="#features">Explore features</a>
+          </div>
+          <ul class="stats-inline" aria-label="Key benefits">
+            <li>24/7 coverage</li>
+            <li>Lead routing</li>
+            <li>Human handoff</li>
+          </ul>
+        </div>
+
+        <div class="hero-panel">
+          <div class="panel-shell">
+            <div class="panel-head">
+              <span class="live-dot"></span>
+              <span>Active assistant</span>
+              <span class="panel-meta">Avg. reply: 1.2s</span>
+            </div>
+            <div class="chat chat-bot">Hi, I can answer questions, qualify leads, or hand off to your team.</div>
+            <div class="chat chat-user">Can you help visitors find the right plan?</div>
+            <div class="chat chat-bot accent">Yes — I can ask a few questions, score intent, and route them to sales.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof">
+        <div><strong>60%</strong><span>faster first response</span></div>
+        <div><strong>3x</strong><span>more qualified leads</span></div>
+        <div><strong>24/7</strong><span>always on</span></div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="section-head">
+          <p class="kicker">Built for teams that need clarity</p>
+          <h2>Everything you need, without the clutter.</h2>
+        </div>
+        <div class="grid">
+          <article>
+            <h3>Train on your content</h3>
+            <p>Connect help docs, FAQs, and internal knowledge so answers stay accurate and on-brand.</p>
+          </article>
+          <article>
+            <h3>Route by intent</h3>
+            <p>Identify support, sales, and onboarding needs, then send each conversation to the right place.</p>
+          </article>
+          <article>
+            <h3>Stay in control</h3>
+            <p>Escalate with full context, measure performance, and refine the bot as your business evolves.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section split">
+        <div>
+          <p class="kicker">Why XIMNET</p>
+          <h2>Fast to deploy. Easy to trust.</h2>
+        </div>
+        <div class="bullets">
+          <div>Answers look and feel like a real teammate, not a canned script.</div>
+          <div>Clear handoff keeps customers from getting stuck in automation loops.</div>
+          <div>Designed for conversion, support efficiency, and better operator visibility.</div>
+        </div>
+      </section>
+
+      <section class="cta" id="contact">
+        <div>
+          <p class="kicker">Ready to see it live?</p>
+          <h2>Let’s build your chatbot experience.</h2>
+        </div>
+        <a class="btn btn-primary" href="mailto:hello@ximnet.ai">hello@ximnet.ai</a>
+      </section>
+    </main>
+  </body>
+</html>
